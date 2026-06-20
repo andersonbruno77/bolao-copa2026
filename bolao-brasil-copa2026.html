@@ -181,10 +181,10 @@ footer{text-align:center;padding:0 1rem 2rem;font-size:11px;color:rgba(255,255,2
   <div id="admin-panel" style="display:none">
 
     <div class="admin-section">
-      <h3>🏆 VALOR DO PRÊMIO POR JOGO</h3>
-      <div class="config-row"><label>Valor total do prêmio (R$)</label><input type="number" id="cfg-valor" min="0" step="1" value="100"></div>
-      <p style="font-size:11px;color:#aaa;margin-bottom:.75rem">Esse valor será dividido entre quem acertar o placar exato de cada jogo.</p>
-      <button class="btn-primary" onclick="saveConfig()">💾 Salvar valor</button>
+      <h3>💰 VALOR DA APOSTA POR JOGO</h3>
+      <p style="font-size:11px;color:#aaa;margin-bottom:.75rem">Defina o valor individual de cada participante por jogo. O prêmio total é calculado automaticamente (valor × nº de apostadores).</p>
+      <div id="admin-apostas"></div>
+      <button class="btn-primary" onclick="saveApostas()" style="margin-top:.5rem">💾 Salvar valores</button>
     </div>
 
     <div class="admin-section">
@@ -226,6 +226,9 @@ const JOGOS = [
   { id:'escocia-brasil',  fase:'Fase de Grupos', data:'2026-06-24T22:00:00-03:00', dataStr:'Qua 24/06 · 19h00 BRT', homeFlag:'🏴󠁧󠁢󠁳󠁣󠁴󠁿', homeTeam:'Escócia', awayFlag:'🇧🇷', awayTeam:'Brasil', local:'Hard Rock Stadium · Miami' }
 ];
 
+// Aposta por jogo (carregada do Firebase, padrão R$10)
+let apostasDB = {}; // { jogoId: valorAposta }
+
 const RESULTADOS_CONHECIDOS = {
   'brasil-marrocos': { home:1, away:1, aoVivo:false, encerrado:true },
   'brasil-haiti':    { home:3, away:0, aoVivo:false, encerrado:true }
@@ -260,6 +263,11 @@ db.ref('participantes').on('value', s => {
   participDB = s.val()||{};
   if (adminOK) renderAdminParticipants();
 });
+db.ref('apostas').on('value', s => {
+  apostasDB = s.val()||{};
+  renderJogos();
+  if(adminOK) renderAdminApostas();
+});
 db.ref('config').on('value', s => {
   if (s.val()) configDB = {...configDB,...s.val()};
   if (adminOK) document.getElementById('cfg-valor').value = configDB.valor||100;
@@ -278,7 +286,9 @@ function renderJogos() {
     const aberto = agora < inicio;
     const aoVivo = res && res.aoVivo;
     const encerrado = res && (res.encerrado || (!res.aoVivo && agora > new Date(inicio.getTime()+130*60000)));
-    const valorPremio = parseFloat(configDB.valor)||100;
+    const apostaPorPessoa = parseFloat(apostasDB[j.id])||10;
+    const numApostadores = Object.keys(pals).length;
+    const valorPremio = apostaPorPessoa * numApostadores;
 
     // Status
     let statusLabel, statusClass;
@@ -316,7 +326,7 @@ function renderJogos() {
           <div class="premio-jogo">
             <div class="premio-jogo-title">🏆 PRÊMIO DO JOGO</div>
             <div class="premio-jogo-valor">R$ ${valorPremio.toFixed(2)}</div>
-            <div class="premio-jogo-info">${vencedores.length} vencedor${vencedores.length>1?'es':''} · R$ ${premioIndividual.toFixed(2)} cada</div>
+            <div class="premio-jogo-info">R$ ${apostaPorPessoa.toFixed(2)}/pessoa × ${numApostadores} apostador${numApostadores!==1?'es':''} · ${vencedores.length} vencedor${vencedores.length>1?'es':''} · <strong>R$ ${premioIndividual.toFixed(2)} cada</strong></div>
             <div class="vencedores">${vs}</div>
           </div>`;
       } else if (res && res.home!=null) {
@@ -324,6 +334,7 @@ function renderJogos() {
           <div class="premio-jogo">
             <div class="premio-jogo-title">🏆 PRÊMIO DO JOGO</div>
             <div class="premio-jogo-valor">R$ ${valorPremio.toFixed(2)}</div>
+            <div class="premio-jogo-info">R$ ${apostaPorPessoa.toFixed(2)}/pessoa × ${numApostadores} apostador${numApostadores!==1?'es':''}</div>
             <div class="sem-vencedor">Ninguém acertou o placar exato desta partida.</div>
           </div>`;
       }
@@ -331,8 +342,8 @@ function renderJogos() {
       premioHTML = `
         <div class="premio-jogo">
           <div class="premio-jogo-title">🏆 PRÊMIO DO JOGO</div>
-          <div class="premio-jogo-valor">R$ ${valorPremio.toFixed(2)}</div>
-          <div class="premio-jogo-info">Acerte o placar exato e leve o prêmio!</div>
+          <div class="premio-jogo-valor">R$ ${apostaPorPessoa.toFixed(2) === "0.00" ? "—" : "R$ " + (apostaPorPessoa * (numApostadores||1)).toFixed(2)}</div>
+          <div class="premio-jogo-info">R$ ${apostaPorPessoa.toFixed(2)}/pessoa · ${numApostadores} apostador${numApostadores!==1?'es':''} até agora</div>
         </div>`;
     }
 
@@ -481,7 +492,7 @@ function adminLogin() {
     document.getElementById('admin-login-block').style.display='none';
     document.getElementById('admin-panel').style.display='block';
     document.getElementById('cfg-valor').value=configDB.valor||100;
-    renderAdminResults(); renderAdminParticipants();
+    renderAdminResults(); renderAdminParticipants(); renderAdminApostas();
   } else showToast('Senha incorreta','error');
 }
 function adminLogout() {
@@ -491,6 +502,40 @@ function adminLogout() {
   document.getElementById('admin-pass').value='';
   renderJogos();
 }
+function renderAdminApostas() {
+  const el = document.getElementById('admin-apostas');
+  if (!el) return;
+  el.innerHTML = JOGOS.map(j => {
+    const val = apostasDB[j.id] || 10;
+    const pals = palpitesDB[j.id]||{};
+    const n = Object.keys(pals).length;
+    const premio = val * n;
+    return `<div class="result-row">
+      <label>
+        ${j.homeFlag} ${j.homeTeam} × ${j.awayTeam} ${j.awayFlag}
+        <br><span style="font-size:10px;color:#aaa">${j.dataStr}</span>
+        <br><span style="font-size:10px;color:#1B5E20;font-weight:600">${n} apostador${n!==1?'es':''} · Prêmio estimado: R$ ${premio.toFixed(2)}</span>
+      </label>
+      <div style="display:flex;align-items:center;gap:4px">
+        <span style="font-size:11px;color:#aaa">R$</span>
+        <input type="number" class="score-mini" style="width:50px" id="ap-${j.id}" value="${val}" min="0" step="1" placeholder="10">
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function saveApostas() {
+  const updates = {};
+  JOGOS.forEach(j => {
+    const el = document.getElementById('ap-'+j.id);
+    if (el) updates[j.id] = parseFloat(el.value)||10;
+  });
+  db.ref('apostas').set(updates).then(() => {
+    showToast('Valores de aposta salvos!');
+    renderJogos();
+  });
+}
+
 function renderAdminResults() {
   document.getElementById('admin-results').innerHTML = JOGOS.map(j=>{
     const res=resultadosDB[j.id]||{};
@@ -525,8 +570,7 @@ function renderAdminParticipants() {
 function togglePago(key,val) { db.ref('participantes/'+key+'/pago').set(val); }
 function delParticipant(key) { if(confirm('Remover?')) db.ref('participantes/'+key).remove(); }
 function saveConfig() {
-  const v=parseFloat(document.getElementById('cfg-valor').value)||100;
-  db.ref('config').update({valor:v}).then(()=>showToast('Valor salvo!'));
+  // valor agora é por jogo em apostasDB
 }
 function changePass() {
   const np=document.getElementById('new-pass').value.trim();
@@ -540,13 +584,15 @@ let sorteioFixado = {}; // { jogoId: [{pagador, vencedor, valor}] }
 
 function renderPremioTab() {
   const c = document.getElementById('premio-container');
-  const valorPremio = parseFloat(configDB.valor)||100;
   let html = '';
 
   JOGOS.forEach(j => {
+    const apostaPorPessoa = parseFloat(apostasDB[j.id])||10;
     const res  = resultadosDB[j.id];
     const pals = palpitesDB[j.id]||{};
     const palsList = Object.entries(pals);
+    const numApostadores = palsList.length;
+    const valorPremio = apostaPorPessoa * numApostadores;
     const encerrado = res && (res.encerrado || (!res.aoVivo));
 
     // Vencedores
@@ -588,7 +634,7 @@ function renderPremioTab() {
       <div class="premio-card">
         <div class="premio-card-top">
           <h2>${j.homeFlag} ${placarStr} ${j.awayFlag}</h2>
-          <p>${j.dataStr} · Prêmio total: R$ ${valorPremio.toFixed(2)}</p>
+          <p>${j.dataStr} · R$ ${apostaPorPessoa.toFixed(2)}/pessoa × ${numApostadores} = <strong>R$ ${valorPremio.toFixed(2)}</strong></p>
         </div>
         <div class="premio-card-body">
           ${podeReSortear ? `<button class="sortear-btn" onclick="resortear('${j.id}')">🎲 Novo sorteio de pagadores</button>` : ''}
