@@ -249,6 +249,11 @@ const RES_SEED = {
   'brasil-haiti':    { home:3, away:0, aoVivo:false, encerrado:true }
 };
 
+const APOSTAS_SEED = {
+  'brasil-marrocos': 50,
+  'brasil-haiti':    50
+};
+
 // ── ESTADO ─────────────────────────────────────────────────────
 let palpitesDB  = {};
 let resultadosDB= {};
@@ -280,8 +285,14 @@ JOGOS.forEach(j => {
 });
 db.ref('apostas').on('value', s => {
   apostasDB = s.val()||{};
+  // Seed valores padrão se ainda não estiverem no Firebase
+  Object.entries(APOSTAS_SEED).forEach(([id, val]) => {
+    if(apostasDB[id]==null) {
+      db.ref('apostas/'+id).set(val);
+    }
+  });
   renderJogos();
-  if(adminOK) renderAdminApostas();
+  if(adminOK) { renderAdminApostas(); }
 });
 db.ref('participantes').on('value', s => {
   participDB = s.val()||{};
@@ -580,7 +591,7 @@ function adminLogin() {
     adminOK=true;
     document.getElementById('admin-login').style.display='none';
     document.getElementById('admin-panel').style.display='block';
-    renderAdminApostas(); renderAdminResults(); renderAdminParts();
+    setTimeout(()=>{ renderAdminApostas(); renderAdminResults(); renderAdminParts(); }, 50);
   } else showToast('Senha incorreta','err');
 }
 function adminLogout() {
