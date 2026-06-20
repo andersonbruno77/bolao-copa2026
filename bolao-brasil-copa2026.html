@@ -250,15 +250,15 @@ const TEAM_BR  = 6;
 
 // ─── JOGOS BASE ────────────────────────────────────────────────
 const JOGOS = [
-  { id:'jogo1', apiFixtureId:null, fase:'Fase de Grupos', data:'2026-06-13T22:00:00-03:00', dataStr:'Sáb 13/06 · 19h00 BRT', homeFlag:'🇧🇷', homeTeam:'Brasil', awayFlag:'🇲🇦', awayTeam:'Marrocos', local:'MetLife Stadium · Nova Jersey' },
-  { id:'jogo2', apiFixtureId:null, fase:'Fase de Grupos', data:'2026-06-20T01:00:00-03:00', dataStr:'Sex 19/06 · 22h00 BRT', homeFlag:'🇧🇷', homeTeam:'Brasil', awayFlag:'🇭🇹', awayTeam:'Haiti',   local:'Lincoln Financial Field · Filadélfia' },
-  { id:'jogo3', apiFixtureId:null, fase:'Fase de Grupos', data:'2026-06-24T22:00:00-03:00', dataStr:'Qua 24/06 · 19h00 BRT', homeFlag:'🏴󠁧󠁢󠁳󠁣󠁴󠁿', homeTeam:'Escócia', awayFlag:'🇧🇷', awayTeam:'Brasil', local:'Hard Rock Stadium · Miami' }
+  { id:'brasil-marrocos', apiFixtureId:null, fase:'Fase de Grupos', data:'2026-06-13T22:00:00-03:00', dataStr:'Sáb 13/06 · 19h00 BRT', homeFlag:'🇧🇷', homeTeam:'Brasil', awayFlag:'🇲🇦', awayTeam:'Marrocos', local:'MetLife Stadium · Nova Jersey' },
+  { id:'brasil-haiti',    apiFixtureId:null, fase:'Fase de Grupos', data:'2026-06-20T01:00:00-03:00', dataStr:'Sex 19/06 · 22h00 BRT', homeFlag:'🇧🇷', homeTeam:'Brasil', awayFlag:'🇭🇹', awayTeam:'Haiti',   local:'Lincoln Financial Field · Filadélfia' },
+  { id:'escocia-brasil',  apiFixtureId:null, fase:'Fase de Grupos', data:'2026-06-24T22:00:00-03:00', dataStr:'Qua 24/06 · 19h00 BRT', homeFlag:'🏴󠁧󠁢󠁳󠁣󠁴󠁿', homeTeam:'Escócia', awayFlag:'🇧🇷', awayTeam:'Brasil', local:'Hard Rock Stadium · Miami' }
 ];
 
 // ─── RESULTADOS CONHECIDOS (fallback se API falhar) ─────────────
 const RESULTADOS_CONHECIDOS = {
-  jogo1: { home:1, away:1, aoVivo:false, encerrado:true },  // Brasil 1-1 Marrocos
-  jogo2: { home:3, away:0, aoVivo:false, encerrado:true },  // Brasil 3-0 Haiti
+  'brasil-marrocos': { home:1, away:1, aoVivo:false, encerrado:true },
+  'brasil-haiti':    { home:3, away:0, aoVivo:false, encerrado:true },
 };
 
 // ─── ESTADO ────────────────────────────────────────────────────
