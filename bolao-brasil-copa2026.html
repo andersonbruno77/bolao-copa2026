@@ -250,7 +250,7 @@ const RES_SEED = {
 };
 
 const APOSTAS_SEED = {
-  'brasil-marrocos': 50,
+  'brasil-marrocos': 0,
   'brasil-haiti':    50
 };
 
@@ -262,6 +262,7 @@ let participDB  = {};
 let configDB    = { senha:'copa2026' };
 let adminOK     = false;
 let sorteioCache= {};
+let sorteiosDB  = {}; // sorteios salvos no Firebase — imutáveis
 
 // ── HELPERS ────────────────────────────────────────────────────
 function jogoIniciou(j) { return new Date() >= new Date(j.data); }
@@ -285,9 +286,9 @@ JOGOS.forEach(j => {
 });
 db.ref('apostas').on('value', s => {
   apostasDB = s.val()||{};
-  // Seed valores padrão se ainda não estiverem no Firebase
+  // Seed valores fixos para jogos encerrados (sempre sobrescreve)
   Object.entries(APOSTAS_SEED).forEach(([id, val]) => {
-    if(apostasDB[id]==null) {
+    if(apostasDB[id] !== val) {
       db.ref('apostas/'+id).set(val);
     }
   });
@@ -297,6 +298,13 @@ db.ref('apostas').on('value', s => {
 db.ref('participantes').on('value', s => {
   participDB = s.val()||{};
   if(adminOK) renderAdminParts();
+});
+db.ref('sorteios').on('value', s => {
+  sorteiosDB = s.val()||{};
+  // atualiza cache local com os salvos
+  Object.entries(sorteiosDB).forEach(([id, plano]) => {
+    sorteioCache[id] = plano;
+  });
 });
 db.ref('config').on('value', s => {
   if(s.val()) configDB = {...configDB,...s.val()};
@@ -510,8 +518,15 @@ function renderPremio() {
     } else if(naoWinners.length===0) {
       bodyHTML = `<div class="premio-tab-empty">🎉 Todos acertaram! Nenhum pagamento necessário</div>`;
     } else {
-      if(!sorteioCache[j.id]) sorteioCache[j.id] = gerarSorteio(naoWinners, winners, premio);
-      bodyHTML = `<button class="btn-sortear" onclick="resortear('${j.id}')">🎲 Novo sorteio de pagadores</button>`;
+      // Se já tem sorteio salvo no Firebase, usa ele (imutável)
+      if(sorteiosDB[j.id]) {
+        sorteioCache[j.id] = sorteiosDB[j.id];
+      } else if(!sorteioCache[j.id]) {
+        // Gera pela primeira vez e salva no Firebase permanentemente
+        sorteioCache[j.id] = gerarSorteio(naoWinners, winners, premio);
+        db.ref('sorteios/'+j.id).set(sorteioCache[j.id]);
+      }
+      bodyHTML = `<div style="font-size:11px;color:#7B1FA2;font-weight:600;margin-bottom:.5rem;padding:4px 0">🔒 Sorteio definitivo — não pode ser alterado</div>`;
       bodyHTML += sorteioCache[j.id].map(item=>`
         <div class="pag-row">
           <div class="pag-de">💸 ${esc(item.pagador)}</div>
@@ -552,10 +567,7 @@ function gerarSorteio(pagadores, vencedores, totalPremio) {
   return resultado;
 }
 
-function resortear(jid) {
-  delete sorteioCache[jid];
-  renderPremio();
-}
+// resortear desabilitado — sorteio é permanente após definição
 
 // ── API ────────────────────────────────────────────────────────
 async function fetchAPI() {
@@ -573,7 +585,7 @@ async function fetchAPI() {
         return (fh.includes('brazil')||fh.includes('brasil')||fa.includes('brazil')||fa.includes('brasil'));
       });
       if(!jogo) return;
-      if(['FT','AET','PEN'].includes(st)) db.ref('resultados/'+jogo.id).set({home:fix.goals.home,away:fix.goals.away,aoVivo:false,encerrado:true});
+      if(['FT','AET','PEN'].includes(st) && !sorteiosDB[jogo.id]) db.ref('resultados/'+jogo.id).set({home:fix.goals.home,away:fix.goals.away,aoVivo:false,encerrado:true});
       else if(['1H','2H','HT','ET','BT','P'].includes(st)) db.ref('resultados/'+jogo.id).set({home:fix.goals.home??0,away:fix.goals.away??0,aoVivo:true,minuto:fix.fixture.status.elapsed,encerrado:false});
     });
   } catch(e){ setApiDot(false,'Erro na API'); }
@@ -671,10 +683,17 @@ function renderAdminResults() {
 function saveResult(id) {
   const h=parseInt(document.getElementById('rh-'+id).value)||0;
   const a=parseInt(document.getElementById('ra-'+id).value)||0;
+  // Verifica se já tem sorteio salvo — se tiver, bloqueia alteração de resultado
+  if(sorteiosDB[id]) {
+    if(!confirm('⚠️ O sorteio de pagadores já foi definido para este jogo.\nAlterar o resultado irá resetar o sorteio.\n\nDeseja continuar?')) return;
+    // Reseta sorteio para regenerar com novo resultado
+    db.ref('sorteios/'+id).remove();
+    delete sorteioCache[id];
+    delete sorteiosDB[id];
+  }
   db.ref('resultados/'+id).set({home:h,away:a,aoVivo:false,encerrado:true}).then(()=>{
     db.ref('auditLogs').push({acao:'saveResult',id,home:h,away:a,ts:Date.now()});
-    showToast('Resultado salvo!');
-    sorteioCache={};
+    showToast('Resultado salvo! Acesse a aba Prêmio para gerar o sorteio.');
   });
 }
 
