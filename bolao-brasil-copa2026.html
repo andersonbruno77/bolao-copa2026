@@ -388,12 +388,13 @@ function renderJogos() {
         formHTML = `<div class="form-section">
           <span class="form-lbl">SEU PALPITE — ${j.hName} × ${j.aName} · R$ ${apostaPP.toFixed(2)}/pessoa</span>
           <div class="form-row">
-            <input type="text" class="inp-name" id="nm-${j.id}" placeholder="Seu nome" maxlength="20">
+            <input type="text" class="inp-name" id="nm-${j.id}" placeholder="Seu nome" maxlength="20" oninput="preencheSeExiste('${j.id}',this.value)">
             <input type="number" class="inp-score" id="sh-${j.id}" value="2" min="0" max="20">
             <span class="sep">×</span>
             <input type="number" class="inp-score" id="sa-${j.id}" value="0" min="0" max="20">
-            <button class="btn-add" onclick="addPalpite('${j.id}')">+</button>
+            <button class="btn-add" id="btn-${j.id}" onclick="addPalpite('${j.id}')">+</button>
           </div>
+          <div id="hint-${j.id}" style="font-size:11px;color:#aaa;margin-top:5px">Digite seu nome · Se já apostou, seu palpite será atualizado até o início do jogo</div>
         </div>`;
       }
     } else {
@@ -408,9 +409,10 @@ function renderJogos() {
       palHTML = palsList.map(([key,p],i)=>{
         const isW = res && res.home!=null && p.home===res.home && p.away===res.away;
         const del = adminOK ? `<button class="pal-del" onclick="delPal('${j.id}','${key}')">×</button>` : '';
+        const editado = p.tsEdit ? ' <span style="font-size:9px;color:#aaa">✏️</span>' : '';
         return `<div class="pal-item ${isW?'pal-winner':'pal-normal'}">
           <span class="pal-num">${i+1}</span>
-          <span class="pal-name">${esc(p.name)}</span>
+          <span class="pal-name">${esc(p.name)}${editado}</span>
           ${isW?'<span>🏆</span>':''}
           <span class="pal-score ${isW?'pal-score-win':'pal-score-nor'}">${p.home} × ${p.away}</span>
           ${del}
@@ -453,6 +455,28 @@ function renderJogos() {
 }
 
 // ── ADD PALPITE ────────────────────────────────────────────────
+// Pré-preenche placar se participante já tem palpite
+function preencheSeExiste(jid, nomeDigitado) {
+  const name = nomeDigitado.trim();
+  if(!name) return;
+  const key = name.toLowerCase().replace(/\s+/g,'_').replace(/[^a-z0-9_]/g,'');
+  const pals = palpitesDB[jid]||{};
+  const hint = document.getElementById('hint-'+jid);
+  const btn  = document.getElementById('btn-'+jid);
+  if(pals[key]) {
+    const p = pals[key];
+    document.getElementById('sh-'+jid).value = p.home;
+    document.getElementById('sa-'+jid).value = p.away;
+    if(hint) { hint.textContent='✏️ Palpite encontrado — ajuste o placar e confirme'; hint.style.color='#1B5E20'; }
+    if(btn)  { btn.textContent='✓'; btn.style.background='#FF8F00'; }
+  } else {
+    if(hint) { hint.textContent='Digite seu nome · Se já apostou, seu palpite será atualizado até o início do jogo'; hint.style.color='#aaa'; }
+    if(btn)  { btn.textContent='+'; btn.style.background='#1B5E20'; }
+    document.getElementById('sh-'+jid).value = 2;
+    document.getElementById('sa-'+jid).value = 0;
+  }
+}
+
 function addPalpite(jid) {
   const nmEl = document.getElementById('nm-'+jid);
   const shEl = document.getElementById('sh-'+jid);
@@ -465,20 +489,30 @@ function addPalpite(jid) {
   if(jogoIniciou(jogo)) { showToast('Palpites encerrados!','err'); return; }
 
   const key = name.toLowerCase().replace(/\s+/g,'_').replace(/[^a-z0-9_]/g,'');
+  const home = parseInt(shEl.value)||0;
+  const away = parseInt(saEl.value)||0;
 
-  // Verifica se já apostou neste jogo
   db.ref('palpites/'+jid+'/'+key).once('value').then(s=>{
-    if(s.exists()) {
-      showToast('Você já registrou um palpite neste jogo!','err');
-      return;
+    const existe = s.exists();
+    if(existe) {
+      // Atualiza placar mantendo ts original
+      const tsOriginal = s.val().ts;
+      db.ref('palpites/'+jid+'/'+key).set({
+        name, home, away, ts:tsOriginal, tsEdit:Date.now()
+      }).then(()=>{
+        nmEl.value='';
+        showToast('Palpite atualizado! ✏️');
+      }).catch(()=>showToast('Erro ao salvar.','err'));
+    } else {
+      // Novo palpite
+      db.ref('palpites/'+jid+'/'+key).set({
+        name, home, away, ts:Date.now()
+      }).then(()=>{
+        nmEl.value='';
+        db.ref('participantes/'+key).once('value').then(s=>{ if(!s.exists()) db.ref('participantes/'+key).set({name,pago:false}); });
+        showToast('Palpite registrado! ⚽');
+      }).catch(()=>showToast('Erro ao salvar.','err'));
     }
-    db.ref('palpites/'+jid+'/'+key).set({
-      name, home:parseInt(shEl.value)||0, away:parseInt(saEl.value)||0, ts:Date.now()
-    }).then(()=>{
-      nmEl.value='';
-      db.ref('participantes/'+key).once('value').then(s=>{ if(!s.exists()) db.ref('participantes/'+key).set({name,pago:false}); });
-      showToast('Palpite registrado! ⚽');
-    }).catch(()=>showToast('Erro ao salvar.','err'));
   });
 }
 
