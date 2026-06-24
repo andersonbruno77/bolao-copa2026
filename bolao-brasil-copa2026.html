@@ -15,31 +15,29 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .hero h1 span{color:#FFD700}
 .hero p{font-size:13px;color:rgba(255,255,255,.6);margin-top:5px}
 .hero-flags{font-size:34px;margin-bottom:10px;display:block}
-.api-status{display:inline-flex;align-items:center;gap:5px;font-size:11px;color:rgba(255,255,255,.5);margin-top:8px}
-.api-dot{width:7px;height:7px;border-radius:50%;background:#aaa}
-.api-dot.live{background:#4CAF50;box-shadow:0 0 6px #4CAF50;animation:blink 2s infinite}
-.api-dot.error{background:#ef5350}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.clock{display:inline-flex;align-items:center;gap:5px;font-size:11px;color:rgba(255,255,255,.5);margin-top:8px}
 
-/* TABS */
-.tabs{display:flex;background:rgba(0,0,0,.35);border-bottom:2px solid rgba(255,255,255,.1)}
-.tab{flex:1;padding:11px 4px;text-align:center;font-size:11px;font-weight:700;color:rgba(255,255,255,.45);cursor:pointer;letter-spacing:.04em;border:none;background:none;transition:color .2s}
+.tabs{display:flex;background:rgba(0,0,0,.35);border-bottom:2px solid rgba(255,255,255,.1);position:sticky;top:0;z-index:50}
+.tab{flex:1;padding:11px 4px;text-align:center;font-size:11px;font-weight:700;color:rgba(255,255,255,.45);cursor:pointer;letter-spacing:.04em;border:none;background:#0a3d1f;transition:color .2s}
 .tab.active{color:#FFD700;border-bottom:2px solid #FFD700;margin-bottom:-2px}
 
 .main{max-width:520px;margin:0 auto;padding:1rem 1rem 3rem}
+.fase-titulo{color:#FFD700;font-size:13px;font-weight:700;letter-spacing:.1em;margin:1.5rem 0 .75rem;padding-left:4px;display:flex;align-items:center;gap:8px}
+.fase-titulo:first-child{margin-top:0}
 
-/* CARDS */
 .card{background:#fff;border-radius:16px;overflow:hidden;margin-bottom:1.25rem;box-shadow:0 4px 20px rgba(0,0,0,.15)}
-.card-top{background:linear-gradient(135deg,#1B5E20,#2E7D32);padding:10px 14px;display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:3px}
-.card-phase{font-size:10px;font-weight:700;color:#A5D6A7;letter-spacing:.08em}
-.card-date{font-size:10px;color:rgba(255,255,255,.55);width:100%;margin-top:1px}
+.card-top{padding:10px 14px;display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:3px}
+.card-top.aberto{background:linear-gradient(135deg,#1B5E20,#2E7D32)}
+.card-top.fechado{background:linear-gradient(135deg,#455A64,#607D8B)}
+.card-phase{font-size:10px;font-weight:700;color:rgba(255,255,255,.85);letter-spacing:.08em}
+.card-date{font-size:10px;color:rgba(255,255,255,.6);width:100%;margin-top:1px}
 .badge{font-size:10px;font-weight:700;padding:3px 10px;border-radius:10px;white-space:nowrap}
 .badge-open{background:#FFD700;color:#1a1a1a}
-.badge-closed{background:#ef5350;color:#fff}
-.badge-finished{background:#90A4AE;color:#fff}
+.badge-closed{background:#37474F;color:#fff}
+.badge-finished{background:#fff;color:#455A64}
 .badge-live{background:#ef5350;color:#fff;animation:blink 1s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.4}}
 
-/* TEAMS */
 .teams-row{padding:1rem 1rem .5rem;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:8px}
 .team{text-align:center}
 .flag{font-size:36px;line-height:1;margin-bottom:4px;display:block}
@@ -52,7 +50,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .score-pending{color:#bbb;background:#f5f5f5;font-size:17px;letter-spacing:1px}
 .min-badge{font-size:10px;font-weight:700;color:#c62828;display:block;text-align:center;margin-top:3px}
 
-/* PREMIO JOGO */
 .premio-box{margin:.25rem 1rem .75rem;background:#FFF8E1;border-radius:12px;padding:.75rem 1rem;border-left:4px solid #FFD700}
 .premio-box-title{font-size:10px;font-weight:700;color:#F57F17;letter-spacing:.08em;margin-bottom:5px}
 .premio-total{font-size:22px;font-weight:800;color:#E65100;line-height:1}
@@ -62,7 +59,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .winner-val{margin-left:auto;font-size:13px;font-weight:800;color:#E65100}
 .no-winner{font-size:11px;color:#aaa;font-style:italic;margin-top:6px}
 
-/* FORM PALPITE */
 .form-section{padding:.75rem 1rem 1rem;border-top:1px solid #f0f0f0}
 .form-lbl{font-size:10px;font-weight:700;color:#aaa;letter-spacing:.1em;margin-bottom:6px;display:block}
 .form-row{display:grid;grid-template-columns:1fr 36px 12px 36px 36px;gap:5px;align-items:center}
@@ -75,10 +71,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .btn-add{height:36px;width:36px;background:#1B5E20;color:#fff;border:none;border-radius:8px;font-size:22px;cursor:pointer;display:flex;align-items:center;justify-content:center}
 .btn-add:hover{background:#2E7D32}
 .btn-add:disabled{background:#ddd;cursor:not-allowed}
-.closed-msg{font-size:11px;color:#ef5350;font-weight:600;text-align:center;padding:6px 0}
+.closed-msg{font-size:12px;color:#607D8B;font-weight:600;text-align:center;padding:10px;background:#ECEFF1;border-radius:10px}
 .aposta-aviso{font-size:11px;color:#aaa;text-align:center;padding:6px 0;font-style:italic}
+.edit-hint{font-size:11px;margin-top:5px;color:#aaa}
+.edit-hint.found{color:#1B5E20;font-weight:600}
 
-/* PALPITES LIST */
 .pals-list{margin-top:8px;display:flex;flex-direction:column;gap:4px}
 .pal-item{display:flex;align-items:center;gap:7px;padding:7px 10px;border-radius:10px}
 .pal-winner{background:#E8F5E9;border:1.5px solid #4CAF50}
@@ -92,10 +89,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .pal-del:hover{color:#e53935}
 .pal-empty{text-align:center;padding:10px 0;font-size:12px;color:#bbb}
 
-/* COMPARTILHAR */
 .btn-wa{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:11px;background:#25D366;color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;margin:0 0 1rem;text-decoration:none}
 
-/* ABA PRÊMIO */
 .premio-tab-card{background:#fff;border-radius:16px;overflow:hidden;margin-bottom:1.25rem;box-shadow:0 4px 20px rgba(0,0,0,.15)}
 .premio-tab-top{background:linear-gradient(135deg,#4A148C,#7B1FA2);padding:12px 16px}
 .premio-tab-top h2{font-size:13px;font-weight:700;color:#fff}
@@ -107,11 +102,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .pag-seta{font-size:11px;color:#aaa;margin:2px 0}
 .pag-para{font-size:14px;font-weight:800;color:#1B5E20}
 .pag-val{display:inline-block;background:#E8F5E9;color:#1B5E20;font-size:12px;font-weight:700;padding:2px 10px;border-radius:20px;margin-top:3px}
-.btn-sortear{width:100%;padding:10px;background:linear-gradient(135deg,#4A148C,#7B1FA2);color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;margin-bottom:.75rem}
 .premio-tab-empty{text-align:center;padding:1rem;font-size:12px;color:#bbb}
+.lock-info{font-size:11px;color:#7B1FA2;font-weight:600;margin-bottom:.5rem;padding:4px 0}
+
 .aviso{font-size:10px;color:rgba(255,255,255,.35);text-align:center;padding:0 1rem 1.5rem;line-height:1.6}
 
-/* ADMIN */
 .admin-card{background:#fff;border-radius:16px;padding:1.25rem;box-shadow:0 4px 20px rgba(0,0,0,.15);margin-bottom:1rem}
 .admin-card h3{font-size:11px;font-weight:700;color:#888;letter-spacing:.08em;margin-bottom:.75rem;border-bottom:1px solid #f0f0f0;padding-bottom:.5rem}
 .inp-std{width:100%;padding:9px 10px;font-size:13px;border:1.5px solid #e0e0e0;border-radius:8px;outline:none;font-family:inherit;color:#222;margin-bottom:.5rem}
@@ -122,20 +117,18 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .btn-red{padding:5px 10px;background:#ef5350;color:#fff;border:none;border-radius:6px;font-size:11px;cursor:pointer}
 .btn-ok{padding:5px 10px;background:#1B5E20;color:#fff;border:none;border-radius:6px;font-size:11px;cursor:pointer}
 
-/* APOSTA ROWS */
 .aposta-jogo-row{padding:.75rem 0;border-bottom:1px solid #f5f5f5}
 .aposta-jogo-row:last-child{border-bottom:none}
-.aposta-jogo-label{font-size:12px;font-weight:600;color:#333;margin-bottom:2px}
+.aposta-jogo-label{font-size:13px;font-weight:700;color:#222;margin-bottom:2px}
 .aposta-jogo-sub{font-size:10px;color:#aaa;margin-bottom:6px}
-.aposta-jogo-input{display:flex;align-items:center;gap:8px}
-.aposta-jogo-input span{font-size:13px;font-weight:700;color:#555}
+.aposta-jogo-input{display:flex;align-items:center;gap:8px;margin-bottom:4px}
+.aposta-jogo-input span{font-size:14px;font-weight:700;color:#555}
 .inp-aposta{width:80px;padding:8px 10px;font-size:16px;font-weight:700;border:1.5px solid #e0e0e0;border-radius:8px;outline:none;color:#1B5E20;-moz-appearance:textfield}
 .inp-aposta::-webkit-inner-spin-button,.inp-aposta::-webkit-outer-spin-button{-webkit-appearance:none}
 .inp-aposta:focus{border-color:#1B5E20}
 .aposta-locked{display:flex;align-items:center;gap:6px;font-size:11px;font-weight:700;color:#aaa;background:#f5f5f5;padding:8px 12px;border-radius:8px}
 .aposta-premio-preview{font-size:11px;color:#1B5E20;font-weight:600;margin-top:4px}
 
-/* RESULT ROWS */
 .res-row{display:flex;align-items:center;gap:6px;padding:8px 0;border-bottom:1px solid #f5f5f5}
 .res-row:last-child{border-bottom:none}
 .res-label{flex:1;font-size:12px;font-weight:600;color:#555}
@@ -147,7 +140,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .part-name{flex:1;font-weight:600;color:#333}
 .part-pago{display:flex;align-items:center;gap:4px;color:#1B5E20;font-size:11px}
 
-.toast{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%);background:#1B5E20;color:#fff;padding:10px 20px;border-radius:20px;font-size:13px;font-weight:500;opacity:0;transition:opacity .3s;pointer-events:none;z-index:999;white-space:nowrap}
+.toast{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%);background:#1B5E20;color:#fff;padding:10px 20px;border-radius:20px;font-size:13px;font-weight:500;opacity:0;transition:opacity .3s;pointer-events:none;z-index:999;white-space:nowrap;max-width:90%;text-align:center}
 .toast.show{opacity:1}
 .toast.err{background:#c62828}
 </style>
@@ -159,10 +152,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   <div class="hero-badge">COPA DO MUNDO 2026</div>
   <h1>Bolão <span>Brasil</span></h1>
   <p>Acerte o placar e ganhe o prêmio do jogo!</p>
-  <div class="api-status">
-    <span class="api-dot" id="api-dot"></span>
-    <span id="api-txt">Conectando...</span>
-  </div>
+  <div class="clock"><span id="relogio">--:--</span> · horário de Brasília</div>
 </div>
 
 <div class="tabs">
@@ -171,58 +161,41 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   <button class="tab" onclick="showTab('admin')">⚙️ ADMIN</button>
 </div>
 
-<!-- JOGOS -->
 <div id="tab-jogos" class="main">
   <div id="jogos-ct"><div style="text-align:center;padding:2rem;color:#fff;font-size:13px">Carregando...</div></div>
 </div>
 
-<!-- PRÊMIO -->
 <div id="tab-premio" class="main" style="display:none">
   <div id="premio-ct"></div>
   <p class="aviso">⚠️ Bolão recreativo privado. O sistema não realiza pagamentos, cobranças ou intermediação financeira. Os pagamentos são acertados diretamente entre os participantes.</p>
 </div>
 
-<!-- ADMIN -->
 <div id="tab-admin" class="main" style="display:none">
-
-  <!-- Login -->
   <div id="admin-login" class="admin-card">
     <h3>🔐 ÁREA ADMINISTRATIVA</h3>
     <input type="password" id="admin-pass" class="inp-std" placeholder="Senha do administrador">
     <button class="btn-green" onclick="adminLogin()">Entrar</button>
   </div>
-
-  <!-- Painel -->
   <div id="admin-panel" style="display:none">
-
-    <!-- Aposta por jogo -->
     <div class="admin-card">
       <h3>💰 VALOR DA APOSTA POR JOGO</h3>
-      <p style="font-size:11px;color:#aaa;margin-bottom:.75rem">Defina antes do início de cada jogo. <strong style="color:#ef5350">Não pode ser alterado após o apito inicial.</strong></p>
+      <p style="font-size:11px;color:#aaa;margin-bottom:.75rem">Defina antes do início. <strong style="color:#ef5350">Trava automaticamente no apito inicial.</strong></p>
       <div id="admin-apostas">Carregando...</div>
       <button class="btn-green" onclick="saveApostas()" style="margin-top:.75rem">💾 Salvar valores</button>
     </div>
-
-    <!-- Resultados -->
     <div class="admin-card">
       <h3>📋 ATUALIZAR RESULTADOS</h3>
-      <button class="btn-green" onclick="buscarAPI()" style="margin-bottom:.75rem">🔄 Buscar pela API agora</button>
       <div id="admin-results">Carregando...</div>
     </div>
-
-    <!-- Participantes -->
     <div class="admin-card">
       <h3>👥 PARTICIPANTES</h3>
       <div id="admin-parts">Carregando...</div>
     </div>
-
-    <!-- Senha -->
     <div class="admin-card">
       <h3>🔑 ALTERAR SENHA</h3>
       <input type="password" id="new-pass" class="inp-std" placeholder="Nova senha">
       <button class="btn-green" onclick="changePass()">Salvar</button>
     </div>
-
     <button class="btn-gray" onclick="adminLogout()" style="margin-bottom:1rem">Sair do admin</button>
   </div>
 </div>
@@ -232,433 +205,369 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 <script>
+'use strict';
 firebase.initializeApp({ databaseURL:'https://bolao-copa2026-16bf3-default-rtdb.firebaseio.com' });
 const db = firebase.database();
 
-const API_KEY  = 'fe2eda29c2428d0ff795ff29bbc516a8';
-const API_BASE = 'https://v3.football.api-sports.io';
-
+/* ════════════════════════════════════════════════════════════
+   ESTRUTURA DE JOGOS — pronta para todas as fases
+   Datas em UTC explícito (Z) para evitar bugs de fuso horário.
+   19h00 BRT = 22h00 UTC | 22h00 BRT = 01h00 UTC (dia seguinte)
+   ════════════════════════════════════════════════════════════ */
 const JOGOS = [
-  { id:'brasil-marrocos', fase:'Fase de Grupos', data:'2026-06-13T22:00:00Z', dataStr:'Sáb 13/06 · 19h00 BRT', hFlag:'🇧🇷', hName:'Brasil', aFlag:'🇲🇦', aName:'Marrocos', local:'MetLife Stadium · NJ' },
-  { id:'brasil-haiti',    fase:'Fase de Grupos', data:'2026-06-20T04:00:00Z', dataStr:'Sex 19/06 · 22h00 BRT', hFlag:'🇧🇷', hName:'Brasil', aFlag:'🇭🇹', aName:'Haiti',   local:'Lincoln Financial · Filadélfia' },
-  { id:'escocia-brasil',  fase:'Fase de Grupos', data:'2026-06-24T22:00:00Z', dataStr:'Qua 24/06 · 19h00 BRT', hFlag:'🏴󠁧󠁢󠁳󠁣󠁴󠁿', hName:'Escócia', aFlag:'🇧🇷', aName:'Brasil', local:'Hard Rock Stadium · Miami' }
+  // ---- FASE DE GRUPOS ----
+  { id:'brasil-marrocos', fase:'Fase de Grupos', dataUTC:'2026-06-13T22:00:00Z', dataStr:'Sáb 13/06 · 19h00 BRT', hFlag:'🇧🇷', hName:'Brasil', aFlag:'🇲🇦', aName:'Marrocos', local:'MetLife Stadium · NJ' },
+  { id:'brasil-haiti',    fase:'Fase de Grupos', dataUTC:'2026-06-20T01:00:00Z', dataStr:'Sex 19/06 · 22h00 BRT', hFlag:'🇧🇷', hName:'Brasil', aFlag:'🇭🇹', aName:'Haiti',   local:'Lincoln Financial · Filadélfia' },
+  { id:'escocia-brasil',  fase:'Fase de Grupos', dataUTC:'2026-06-24T22:00:00Z', dataStr:'Qua 24/06 · 19h00 BRT', hFlag:'🏴󠁧󠁢󠁳󠁣󠁴󠁿', hName:'Escócia', aFlag:'🇧🇷', aName:'Brasil', local:'Hard Rock Stadium · Miami' },
+  // ---- PRÓXIMAS FASES (adicione aqui quando definidas) ----
+  // Exemplo de oitavas (descomente e ajuste quando souber adversário/data):
+  // { id:'oitavas-brasil',  fase:'Oitavas de Final', dataUTC:'2026-06-29T22:00:00Z', dataStr:'Seg 29/06 · 19h00 BRT', hFlag:'🇧🇷', hName:'Brasil', aFlag:'🏳️', aName:'A definir', local:'A definir' },
 ];
 
 const RES_SEED = {
-  'brasil-marrocos': { home:1, away:1, aoVivo:false, encerrado:true },
-  'brasil-haiti':    { home:3, away:0, aoVivo:false, encerrado:true }
+  'brasil-marrocos': { home:1, away:1, encerrado:true },
+  'brasil-haiti':    { home:3, away:0, encerrado:true }
 };
-
 const APOSTAS_SEED = {
   'brasil-marrocos': 0,
   'brasil-haiti':    50
 };
 
-// ── ESTADO ─────────────────────────────────────────────────────
-let palpitesDB  = {};
-let resultadosDB= {};
-let apostasDB   = {};
-let participDB  = {};
-let configDB    = { senha:'copa2026' };
-let adminOK     = false;
-let sorteioCache= {};
-let sorteiosDB  = {}; // sorteios salvos no Firebase — imutáveis
+const SENHA_PADRAO = 'copa2026';
+const MAX_GOLS = 30;
 
-// ── HELPERS ────────────────────────────────────────────────────
-function jogoIniciou(j) {
-  // Compara usando timestamp em ms para evitar problemas de fuso
-  const agora = Date.now();
-  const inicio = new Date(j.data).getTime();
-  return agora >= inicio;
+/* ── ESTADO ── */
+let palpitesDB={}, resultadosDB={}, apostasDB={}, participDB={};
+let configDB={senha:SENHA_PADRAO}, sorteiosDB={};
+let adminOK=false;
+let sorteioCache={};
+
+/* ════════════════════════════════════════════════════════════
+   CONTROLE DE TEMPO — fonte única de verdade
+   ════════════════════════════════════════════════════════════ */
+function agoraMs() { return Date.now(); }
+function inicioMs(j) { return new Date(j.dataUTC).getTime(); }
+function jogoIniciou(j) { return agoraMs() >= inicioMs(j); }
+
+function relogioBRT() {
+  const d = new Date();
+  return d.toLocaleTimeString('pt-BR',{timeZone:'America/Sao_Paulo',hour:'2-digit',minute:'2-digit'});
 }
-function apostaBloqueada(j) { return jogoIniciou(j); }
+function tickRelogio(){ const el=document.getElementById('relogio'); if(el) el.textContent=relogioBRT(); }
+setInterval(tickRelogio,1000); tickRelogio();
 
-// ── FIREBASE ───────────────────────────────────────────────────
-JOGOS.forEach(j => {
-  db.ref('palpites/'+j.id).on('value', s => {
-    palpitesDB[j.id] = s.val()||{};
-    renderJogos();
-    if(adminOK) renderAdminApostas();
-  });
-  db.ref('resultados/'+j.id).on('value', s => {
-    const v = s.val();
-    if (v) { resultadosDB[j.id]=v; }
-    else if (RES_SEED[j.id]) { db.ref('resultados/'+j.id).set(RES_SEED[j.id]); }
-    else { resultadosDB[j.id]=null; }
-    renderJogos();
-    if(adminOK) renderAdminResults();
-  });
-});
-db.ref('apostas').on('value', s => {
-  apostasDB = s.val()||{};
-  // Seed valores fixos para jogos encerrados (sempre sobrescreve)
-  Object.entries(APOSTAS_SEED).forEach(([id, val]) => {
-    if(apostasDB[id] !== val) {
-      db.ref('apostas/'+id).set(val);
-    }
-  });
-  renderJogos();
-  if(adminOK) { renderAdminApostas(); }
-});
-db.ref('participantes').on('value', s => {
-  participDB = s.val()||{};
-  if(adminOK) renderAdminParts();
-});
-db.ref('sorteios').on('value', s => {
-  sorteiosDB = s.val()||{};
-  // atualiza cache local com os salvos
-  Object.entries(sorteiosDB).forEach(([id, plano]) => {
-    sorteioCache[id] = plano;
+/* ════════════════════════════════════════════════════════════
+   FIREBASE LISTENERS
+   ════════════════════════════════════════════════════════════ */
+JOGOS.forEach(j=>{
+  db.ref('palpites/'+j.id).on('value', s=>{ palpitesDB[j.id]=s.val()||{}; renderJogos(); if(adminOK)renderAdminApostas(); });
+  db.ref('resultados/'+j.id).on('value', s=>{
+    const v=s.val();
+    if(v) resultadosDB[j.id]=v;
+    else if(RES_SEED[j.id]){ db.ref('resultados/'+j.id).set(RES_SEED[j.id]); }
+    else resultadosDB[j.id]=null;
+    renderJogos(); if(adminOK)renderAdminResults();
   });
 });
-db.ref('config').on('value', s => {
-  if(s.val()) configDB = {...configDB,...s.val()};
+db.ref('apostas').on('value', s=>{
+  apostasDB=s.val()||{};
+  Object.entries(APOSTAS_SEED).forEach(([id,val])=>{ if(apostasDB[id]==null) db.ref('apostas/'+id).set(val); });
+  renderJogos(); if(adminOK)renderAdminApostas();
 });
+db.ref('participantes').on('value', s=>{ participDB=s.val()||{}; if(adminOK)renderAdminParts(); });
+db.ref('config').on('value', s=>{ if(s.val())configDB={...configDB,...s.val()}; });
+db.ref('sorteios').on('value', s=>{ sorteiosDB=s.val()||{}; Object.entries(sorteiosDB).forEach(([id,p])=>sorteioCache[id]=p); if(document.getElementById('tab-premio').style.display!=='none')renderPremio(); });
 
-// ── RENDER JOGOS ───────────────────────────────────────────────
-function renderJogos() {
-  const c = document.getElementById('jogos-ct');
-  let html = '';
+/* ════════════════════════════════════════════════════════════
+   RENDER JOGOS (agrupado por fase)
+   ════════════════════════════════════════════════════════════ */
+function renderJogos(){
+  const c=document.getElementById('jogos-ct');
+  let html='';
+  let faseAtual='';
 
-  JOGOS.forEach(j => {
-    const res     = resultadosDB[j.id];
-    const pals    = palpitesDB[j.id]||{};
-    const aberto  = !jogoIniciou(j);
-    const aoVivo  = res && res.aoVivo;
-    const encerrado = res && (res.encerrado || jogoIniciou(j));
-    const apostaPP  = parseFloat(apostasDB[j.id])||0;
-    const nPals     = Object.keys(pals).length;
-    const premio    = apostaPP * nPals;
-
-    // Badge
-    let badge, badgeCls;
-    if(aoVivo)       { badge='🔴 AO VIVO'; badgeCls='badge-live'; }
-    else if(encerrado){ badge='ENCERRADO'; badgeCls='badge-finished'; }
-    else if(aberto)  { badge='ABERTO ✓';  badgeCls='badge-open'; }
-    else             { badge='ENCERRADO'; badgeCls='badge-closed'; }
-
-    // Placar
-    let scoreHTML;
-    if(res && res.home!=null) {
-      const cls = aoVivo ? 'score score-live' : 'score score-done';
-      scoreHTML = `<span class="${cls}">${res.home} × ${res.away}</span>`;
-      if(aoVivo && res.minuto) scoreHTML += `<span class="min-badge">⏱ ${res.minuto}'</span>`;
-    } else {
-      scoreHTML = `<span class="score score-pending">? × ?</span>`;
-    }
-
-    // Vencedores
-    const palsList = Object.entries(pals).sort((a,b)=>(a[1].ts||0)-(b[1].ts||0));
-    let winners = [];
-    if(res && res.home!=null) {
-      winners = palsList.filter(([,p])=>p.home===res.home && p.away===res.away);
-    }
-    const premioInd = winners.length>0 ? premio/winners.length : 0;
-
-    // Bloco prêmio
-    let premioHTML = '';
-    if(apostaPP > 0 || encerrado || aoVivo) {
-      if(encerrado || aoVivo) {
-        if(winners.length>0) {
-          const wRows = winners.map(([,p])=>`<div class="winner-row">🏆 ${esc(p.name)}<span class="winner-val">R$ ${premioInd.toFixed(2)}</span></div>`).join('');
-          premioHTML = `<div class="premio-box">
-            <div class="premio-box-title">🏆 PRÊMIO DO JOGO</div>
-            <div class="premio-total">R$ ${premio.toFixed(2)}</div>
-            <div class="premio-calc">R$ ${apostaPP.toFixed(2)}/pessoa × ${nPals} apostador${nPals!==1?'es':''} · ${winners.length} vencedor${winners.length>1?'es':''} · R$ ${premioInd.toFixed(2)} cada</div>
-            <div class="winners-list">${wRows}</div>
-          </div>`;
-        } else if(res && res.home!=null) {
-          premioHTML = `<div class="premio-box">
-            <div class="premio-box-title">🏆 PRÊMIO DO JOGO</div>
-            <div class="premio-total">R$ ${premio.toFixed(2)}</div>
-            <div class="premio-calc">R$ ${apostaPP.toFixed(2)}/pessoa × ${nPals} apostador${nPals!==1?'es':''}</div>
-            <div class="no-winner">😬 Ninguém acertou o placar exato desta partida.</div>
-          </div>`;
-        }
-      } else if(aberto && apostaPP>0) {
-        premioHTML = `<div class="premio-box">
-          <div class="premio-box-title">🏆 PRÊMIO ESTIMADO</div>
-          <div class="premio-total">R$ ${premio.toFixed(2)}</div>
-          <div class="premio-calc">R$ ${apostaPP.toFixed(2)}/pessoa × ${nPals} apostador${nPals!==1?'es':''} até agora</div>
-        </div>`;
-      }
-    }
-
-    // Form palpite
-    let formHTML = '';
-    if(aberto) {
-      if(apostaPP <= 0) {
-        formHTML = `<div class="form-section"><div class="aposta-aviso">⏳ Aguardando o admin definir o valor da aposta</div></div>`;
-      } else {
-        formHTML = `<div class="form-section">
-          <span class="form-lbl">SEU PALPITE — ${j.hName} × ${j.aName} · R$ ${apostaPP.toFixed(2)}/pessoa</span>
-          <div class="form-row">
-            <input type="text" class="inp-name" id="nm-${j.id}" placeholder="Seu nome" maxlength="20" oninput="preencheSeExiste('${j.id}',this.value)">
-            <input type="number" class="inp-score" id="sh-${j.id}" value="2" min="0" max="20">
-            <span class="sep">×</span>
-            <input type="number" class="inp-score" id="sa-${j.id}" value="0" min="0" max="20">
-            <button class="btn-add" id="btn-${j.id}" onclick="addPalpite('${j.id}')">+</button>
-          </div>
-          <div id="hint-${j.id}" style="font-size:11px;color:#aaa;margin-top:5px">Digite seu nome · Se já apostou, seu palpite será atualizado até o início do jogo</div>
-        </div>`;
-      }
-    } else {
-      formHTML = `<div class="form-section"><div class="closed-msg">🔒 Palpites encerrados${aoVivo?' — jogo em andamento':''}</div></div>`;
-    }
-
-    // Lista palpites
-    let palHTML = '';
-    if(palsList.length===0) {
-      palHTML = '<div class="pal-empty">Nenhum palpite ainda</div>';
-    } else {
-      palHTML = palsList.map(([key,p],i)=>{
-        const isW = res && res.home!=null && p.home===res.home && p.away===res.away;
-        const del = adminOK ? `<button class="pal-del" onclick="delPal('${j.id}','${key}')">×</button>` : '';
-        const editado = p.tsEdit ? ' <span style="font-size:9px;color:#aaa">✏️</span>' : '';
-        return `<div class="pal-item ${isW?'pal-winner':'pal-normal'}">
-          <span class="pal-num">${i+1}</span>
-          <span class="pal-name">${esc(p.name)}${editado}</span>
-          ${isW?'<span>🏆</span>':''}
-          <span class="pal-score ${isW?'pal-score-win':'pal-score-nor'}">${p.home} × ${p.away}</span>
-          ${del}
-        </div>`;
-      }).join('');
-    }
-
-    // Botão WA (encerrado)
-    let waBtn = '';
-    if(encerrado && res && res.home!=null) {
-      let txt = `⚽ *Bolão Brasil - Copa 2026*\n*${j.hName} ${res.home}×${res.away} ${j.aName}*\n\n`;
-      if(winners.length>0) txt += `🏆 ${winners.map(([,p])=>p.name).join(', ')} — R$ ${premioInd.toFixed(2)} cada\n`;
-      else txt += `😬 Ninguém acertou!\n`;
-      txt += `\nhttps://andersonbruno77.github.io/bolao-copa2026/bolao-brasil-copa2026.html`;
-      waBtn = `<div style="padding:0 1rem 1rem"><a class="btn-wa" href="https://wa.me/?text=${encodeURIComponent(txt)}" target="_blank">📲 Compartilhar no WhatsApp</a></div>`;
-    }
-
-    html += `<div class="card">
-      <div class="card-top">
-        <span class="card-phase">${j.fase.toUpperCase()}</span>
-        <span class="badge ${badgeCls}">${badge}</span>
-        <span class="card-date">${j.dataStr} · ${j.local}</span>
-      </div>
-      <div class="teams-row">
-        <div class="team"><span class="flag">${j.hFlag}</span><div class="tname">${j.hName}</div></div>
-        <div class="vs-col"><span class="vs-lbl">vs</span>${scoreHTML}</div>
-        <div class="team"><span class="flag">${j.aFlag}</span><div class="tname">${j.aName}</div></div>
-      </div>
-      ${premioHTML}
-      ${formHTML}
-      <div class="form-section" style="padding-top:0;border-top:none">
-        <span class="form-lbl" style="padding-top:4px">PALPITES DO GRUPO</span>
-        <div class="pals-list">${palHTML}</div>
-      </div>
-      ${waBtn}
-    </div>`;
-  });
-
-  c.innerHTML = html;
-}
-
-// ── ADD PALPITE ────────────────────────────────────────────────
-// Pré-preenche placar se participante já tem palpite
-function preencheSeExiste(jid, nomeDigitado) {
-  const name = nomeDigitado.trim();
-  if(!name) return;
-  const key = name.toLowerCase().replace(/\s+/g,'_').replace(/[^a-z0-9_]/g,'');
-  const pals = palpitesDB[jid]||{};
-  const hint = document.getElementById('hint-'+jid);
-  const btn  = document.getElementById('btn-'+jid);
-  if(pals[key]) {
-    const p = pals[key];
-    document.getElementById('sh-'+jid).value = p.home;
-    document.getElementById('sa-'+jid).value = p.away;
-    if(hint) { hint.textContent='✏️ Palpite encontrado — ajuste o placar e confirme'; hint.style.color='#1B5E20'; }
-    if(btn)  { btn.textContent='✓'; btn.style.background='#FF8F00'; }
-  } else {
-    if(hint) { hint.textContent='Digite seu nome · Se já apostou, seu palpite será atualizado até o início do jogo'; hint.style.color='#aaa'; }
-    if(btn)  { btn.textContent='+'; btn.style.background='#1B5E20'; }
-    document.getElementById('sh-'+jid).value = 2;
-    document.getElementById('sa-'+jid).value = 0;
-  }
-}
-
-function addPalpite(jid) {
-  const nmEl = document.getElementById('nm-'+jid);
-  const shEl = document.getElementById('sh-'+jid);
-  const saEl = document.getElementById('sa-'+jid);
-  const name = nmEl.value.trim();
-
-  if(!name) { nmEl.style.borderColor='#e53935'; nmEl.focus(); setTimeout(()=>nmEl.style.borderColor='#e0e0e0',1500); return; }
-
-  const jogo = JOGOS.find(j=>j.id===jid);
-  if(jogoIniciou(jogo)) { showToast('Palpites encerrados!','err'); return; }
-
-  const key = name.toLowerCase().replace(/\s+/g,'_').replace(/[^a-z0-9_]/g,'');
-  const home = parseInt(shEl.value)||0;
-  const away = parseInt(saEl.value)||0;
-
-  db.ref('palpites/'+jid+'/'+key).once('value').then(s=>{
-    const existe = s.exists();
-    if(existe) {
-      // Atualiza placar mantendo ts original
-      const tsOriginal = s.val().ts;
-      db.ref('palpites/'+jid+'/'+key).set({
-        name, home, away, ts:tsOriginal, tsEdit:Date.now()
-      }).then(()=>{
-        nmEl.value='';
-        showToast('Palpite atualizado! ✏️');
-      }).catch(()=>showToast('Erro ao salvar.','err'));
-    } else {
-      // Novo palpite
-      db.ref('palpites/'+jid+'/'+key).set({
-        name, home, away, ts:Date.now()
-      }).then(()=>{
-        nmEl.value='';
-        db.ref('participantes/'+key).once('value').then(s=>{ if(!s.exists()) db.ref('participantes/'+key).set({name,pago:false}); });
-        showToast('Palpite registrado! ⚽');
-      }).catch(()=>showToast('Erro ao salvar.','err'));
-    }
-  });
-}
-
-function delPal(jid, key) {
-  if(!adminOK||!confirm('Remover palpite?')) return;
-  db.ref('palpites/'+jid+'/'+key).remove();
-  db.ref('auditLogs').push({acao:'delPal',jid,key,ts:Date.now()});
-}
-
-// ── RENDER PRÊMIO TAB ──────────────────────────────────────────
-function renderPremio() {
-  const c = document.getElementById('premio-ct');
-  let html = '';
-
-  JOGOS.forEach(j => {
-    const res    = resultadosDB[j.id];
-    const pals   = palpitesDB[j.id]||{};
-    const palsList = Object.entries(pals);
-    const nPals  = palsList.length;
-    const apostaPP = parseFloat(apostasDB[j.id])||0;
-    const premio = apostaPP * nPals;
-    const encerrado = res && (res.encerrado || jogoIniciou(j));
-
-    let winners = [], naoWinners = [];
-    if(res && res.home!=null) {
-      winners    = palsList.filter(([,p])=>p.home===res.home && p.away===res.away).map(([,p])=>p.name);
-      naoWinners = palsList.filter(([,p])=>!winners.includes(p.name)).map(([,p])=>p.name);
-    }
-
-    let bodyHTML = '';
-    const placarStr = res && res.home!=null ? `${j.hName} ${res.home}×${res.away} ${j.aName}` : `${j.hName} × ${j.aName}`;
-
-    if(!res || res.home==null) {
-      bodyHTML = `<div class="premio-tab-empty">⏳ Aguardando resultado do jogo</div>`;
-    } else if(winners.length===0) {
-      bodyHTML = `<div class="premio-tab-empty">😬 Ninguém acertou — nenhum pagamento necessário</div>`;
-    } else if(naoWinners.length===0) {
-      bodyHTML = `<div class="premio-tab-empty">🎉 Todos acertaram! Nenhum pagamento necessário</div>`;
-    } else {
-      // Se já tem sorteio salvo no Firebase, usa ele (imutável)
-      if(sorteiosDB[j.id]) {
-        sorteioCache[j.id] = sorteiosDB[j.id];
-      } else if(!sorteioCache[j.id]) {
-        // Gera pela primeira vez e salva no Firebase permanentemente
-        sorteioCache[j.id] = gerarSorteio(naoWinners, winners, premio);
-        db.ref('sorteios/'+j.id).set(sorteioCache[j.id]);
-      }
-      bodyHTML = `<div style="font-size:11px;color:#7B1FA2;font-weight:600;margin-bottom:.5rem;padding:4px 0">🔒 Sorteio definitivo — não pode ser alterado</div>`;
-      bodyHTML += sorteioCache[j.id].map(item=>`
-        <div class="pag-row">
-          <div class="pag-de">💸 ${esc(item.pagador)}</div>
-          <div class="pag-seta">paga diretamente para</div>
-          <div class="pag-para">🏆 ${esc(item.vencedor)}</div>
-          <span class="pag-val">R$ ${item.valor.toFixed(2)}</span>
-        </div>`).join('');
-    }
-
-    html += `<div class="premio-tab-card">
-      <div class="premio-tab-top">
-        <h2>${j.hFlag} ${placarStr} ${j.aFlag}</h2>
-        <p>${j.dataStr} · R$ ${apostaPP.toFixed(2)}/pessoa × ${nPals} = <strong>R$ ${premio.toFixed(2)}</strong></p>
-      </div>
-      <div class="premio-tab-body">${bodyHTML}</div>
-    </div>`;
-  });
-
-  c.innerHTML = html || '<div style="text-align:center;color:#fff;padding:2rem;font-size:13px">Carregando...</div>';
-}
-
-function gerarSorteio(pagadores, vencedores, totalPremio) {
-  const pags = [...pagadores].sort(()=>Math.random()-.5);
-  const resultado = [];
-  if(vencedores.length===1) {
-    const v = vencedores[0];
-    const val = pags.length>0 ? totalPremio/pags.length : totalPremio;
-    pags.forEach(p=>resultado.push({pagador:p, vencedor:v, valor:val}));
-  } else {
-    const premioV = totalPremio/vencedores.length;
-    const grupos = Array.from({length:vencedores.length},()=>[]);
-    pags.forEach((p,i)=>grupos[i%vencedores.length].push(p));
-    grupos.forEach((g,i)=>{
-      const val = g.length>0 ? premioV/g.length : 0;
-      g.forEach(p=>resultado.push({pagador:p, vencedor:vencedores[i], valor:val}));
-    });
-  }
-  return resultado;
-}
-
-// resortear desabilitado — sorteio é permanente após definição
-
-// ── API ────────────────────────────────────────────────────────
-async function fetchAPI() {
-  try {
-    const r = await fetch(`${API_BASE}/fixtures?league=1&season=2026&team=6`,{headers:{'x-apisports-key':API_KEY}});
-    const d = await r.json();
-    if(!d.response||!d.response.length){ setApiDot(false,'Sem dados da API'); return; }
-    setApiDot(true,`API online · ${d.response.length} jogos`);
-    d.response.forEach(fix=>{
-      const st = fix.fixture.status.short;
-      const fh = (fix.teams.home.name||'').toLowerCase();
-      const fa = (fix.teams.away.name||'').toLowerCase();
-      const jogo = JOGOS.find(j=>{
-        const jh=j.hName.toLowerCase(), ja=j.aName.toLowerCase();
-        return (fh.includes('brazil')||fh.includes('brasil')||fa.includes('brazil')||fa.includes('brasil'));
-      });
-      if(!jogo) return;
-      if(['FT','AET','PEN'].includes(st) && !sorteiosDB[jogo.id]) db.ref('resultados/'+jogo.id).set({home:fix.goals.home,away:fix.goals.away,aoVivo:false,encerrado:true});
-      else if(['1H','2H','HT','ET','BT','P'].includes(st)) db.ref('resultados/'+jogo.id).set({home:fix.goals.home??0,away:fix.goals.away??0,aoVivo:true,minuto:fix.fixture.status.elapsed,encerrado:false});
-    });
-  } catch(e){ setApiDot(false,'Erro na API'); }
-}
-function setApiDot(ok,msg){ document.getElementById('api-dot').className='api-dot '+(ok?'live':'error'); document.getElementById('api-txt').textContent=msg; }
-async function buscarAPI(){ showToast('Buscando...'); await fetchAPI(); showToast('API consultada!'); }
-fetchAPI();
-setInterval(()=>{ if(Object.values(resultadosDB).some(r=>r&&r.aoVivo)) fetchAPI(); },60000);
-setInterval(fetchAPI,5*60*1000);
-
-// Verifica a cada 30s se algum jogo iniciou — bloqueia form automaticamente
-setInterval(()=>{
-  const agora = new Date();
   JOGOS.forEach(j=>{
-    const inicio = new Date(j.data);
-    // Se o jogo iniciou há menos de 5 minutos, re-renderiza para bloquear
-    const diff = agora - inicio;
-    if(diff >= 0 && diff <= 5*60*1000) {
-      renderJogos();
+    if(j.fase!==faseAtual){
+      faseAtual=j.fase;
+      const icon = faseAtual.includes('Grupos')?'⚽':faseAtual.includes('Oitavas')?'🥊':faseAtual.includes('Quartas')?'🔥':faseAtual.includes('Semi')?'⭐':faseAtual.includes('Final')?'🏆':'⚽';
+      html+=`<div class="fase-titulo">${icon} ${faseAtual.toUpperCase()}</div>`;
+    }
+    html+=renderCard(j);
+  });
+
+  c.innerHTML=html;
+}
+
+function renderCard(j){
+  const res=resultadosDB[j.id];
+  const pals=palpitesDB[j.id]||{};
+  const iniciou=jogoIniciou(j);
+  const aberto=!iniciou;
+  const aoVivo=res&&res.aoVivo;
+  const temResultado=res&&res.home!=null;
+  const apostaPP=parseFloat(apostasDB[j.id])||0;
+  const nPals=Object.keys(pals).length;
+  const premio=apostaPP*nPals;
+
+  // Badge
+  let badge,badgeCls;
+  if(aoVivo){badge='🔴 AO VIVO';badgeCls='badge-live';}
+  else if(temResultado){badge='ENCERRADO';badgeCls='badge-finished';}
+  else if(aberto){badge='ABERTO ✓';badgeCls='badge-open';}
+  else{badge='🔒 FECHADO';badgeCls='badge-closed';}
+
+  // Placar
+  let scoreHTML;
+  if(temResultado){
+    const cls=aoVivo?'score score-live':'score score-done';
+    scoreHTML=`<span class="${cls}">${res.home} × ${res.away}</span>`;
+    if(aoVivo&&res.minuto)scoreHTML+=`<span class="min-badge">⏱ ${res.minuto}'</span>`;
+  }else{
+    scoreHTML=`<span class="score score-pending">? × ?</span>`;
+  }
+
+  // Vencedores
+  const palsList=Object.entries(pals).sort((a,b)=>(a[1].ts||0)-(b[1].ts||0));
+  let winners=[];
+  if(temResultado)winners=palsList.filter(([,p])=>p.home===res.home&&p.away===res.away);
+  const premioInd=winners.length>0?premio/winners.length:0;
+
+  // Bloco prêmio
+  let premioHTML='';
+  if(temResultado){
+    if(winners.length>0){
+      const wRows=winners.map(([,p])=>`<div class="winner-row">🏆 ${esc(p.name)}<span class="winner-val">R$ ${premioInd.toFixed(2)}</span></div>`).join('');
+      premioHTML=`<div class="premio-box"><div class="premio-box-title">🏆 PRÊMIO DO JOGO</div><div class="premio-total">R$ ${premio.toFixed(2)}</div><div class="premio-calc">R$ ${apostaPP.toFixed(2)}/pessoa × ${nPals} · ${winners.length} vencedor${winners.length>1?'es':''} · R$ ${premioInd.toFixed(2)} cada</div><div class="winners-list">${wRows}</div></div>`;
+    }else{
+      premioHTML=`<div class="premio-box"><div class="premio-box-title">🏆 PRÊMIO DO JOGO</div><div class="premio-total">R$ ${premio.toFixed(2)}</div><div class="premio-calc">R$ ${apostaPP.toFixed(2)}/pessoa × ${nPals}</div><div class="no-winner">😬 Ninguém acertou o placar exato.</div></div>`;
+    }
+  }else if(apostaPP>0){
+    premioHTML=`<div class="premio-box"><div class="premio-box-title">🏆 PRÊMIO ${aberto?'ESTIMADO':'DO JOGO'}</div><div class="premio-total">R$ ${premio.toFixed(2)}</div><div class="premio-calc">R$ ${apostaPP.toFixed(2)}/pessoa × ${nPals} apostador${nPals!==1?'es':''}${aberto?' até agora':''}</div></div>`;
+  }
+
+  // FORM — só se aberto E aposta definida
+  let formHTML='';
+  if(aberto){
+    if(apostaPP<=0){
+      formHTML=`<div class="form-section"><div class="aposta-aviso">⏳ Aguardando o admin definir o valor da aposta</div></div>`;
+    }else{
+      formHTML=`<div class="form-section">
+        <span class="form-lbl">SEU PALPITE — ${j.hName} × ${j.aName} · R$ ${apostaPP.toFixed(2)}/pessoa</span>
+        <div class="form-row">
+          <input type="text" class="inp-name" id="nm-${j.id}" placeholder="Seu nome" maxlength="20" oninput="checaExistente('${j.id}',this.value)">
+          <input type="number" class="inp-score" id="sh-${j.id}" value="0" min="0" max="${MAX_GOLS}">
+          <span class="sep">×</span>
+          <input type="number" class="inp-score" id="sa-${j.id}" value="0" min="0" max="${MAX_GOLS}">
+          <button class="btn-add" id="bt-${j.id}" onclick="addPalpite('${j.id}')">+</button>
+        </div>
+        <div class="edit-hint" id="hint-${j.id}">Digite seu nome · pode ajustar até o início do jogo</div>
+      </div>`;
+    }
+  }else{
+    formHTML=`<div class="form-section"><div class="closed-msg">🔒 Palpites encerrados — o jogo já começou</div></div>`;
+  }
+
+  // Lista palpites
+  let palHTML='';
+  if(palsList.length===0){
+    palHTML='<div class="pal-empty">Nenhum palpite ainda</div>';
+  }else{
+    palHTML=palsList.map(([key,p],i)=>{
+      const isW=temResultado&&p.home===res.home&&p.away===res.away;
+      const del=adminOK?`<button class="pal-del" onclick="delPal('${j.id}','${key}')">×</button>`:'';
+      const ed=p.tsEdit?' <span style="font-size:9px;color:#aaa">✏️</span>':'';
+      return `<div class="pal-item ${isW?'pal-winner':'pal-normal'}"><span class="pal-num">${i+1}</span><span class="pal-name">${esc(p.name)}${ed}</span>${isW?'<span>🏆</span>':''}<span class="pal-score ${isW?'pal-score-win':'pal-score-nor'}">${p.home} × ${p.away}</span>${del}</div>`;
+    }).join('');
+  }
+
+  // WhatsApp
+  let waBtn='';
+  if(temResultado&&!aoVivo){
+    let txt=`⚽ *Bolão Brasil - Copa 2026*\n*${j.hName} ${res.home}×${res.away} ${j.aName}*\n\n`;
+    if(winners.length>0)txt+=`🏆 ${winners.map(([,p])=>p.name).join(', ')} — R$ ${premioInd.toFixed(2)} cada\n`;
+    else txt+=`😬 Ninguém acertou!\n`;
+    txt+=`\nhttps://andersonbruno77.github.io/bolao-copa2026/bolao-brasil-copa2026.html`;
+    waBtn=`<div style="padding:0 1rem 1rem"><a class="btn-wa" href="https://wa.me/?text=${encodeURIComponent(txt)}" target="_blank">📲 Compartilhar no WhatsApp</a></div>`;
+  }
+
+  return `<div class="card">
+    <div class="card-top ${aberto?'aberto':'fechado'}">
+      <span class="card-phase">${j.fase.toUpperCase()}</span>
+      <span class="badge ${badgeCls}">${badge}</span>
+      <span class="card-date">${j.dataStr} · ${j.local}</span>
+    </div>
+    <div class="teams-row">
+      <div class="team"><span class="flag">${j.hFlag}</span><div class="tname">${j.hName}</div></div>
+      <div class="vs-col"><span class="vs-lbl">vs</span>${scoreHTML}</div>
+      <div class="team"><span class="flag">${j.aFlag}</span><div class="tname">${j.aName}</div></div>
+    </div>
+    ${premioHTML}
+    ${formHTML}
+    <div class="form-section" style="padding-top:0;border-top:none">
+      <span class="form-lbl" style="padding-top:4px">PALPITES DO GRUPO (${nPals})</span>
+      <div class="pals-list">${palHTML}</div>
+    </div>
+    ${waBtn}
+  </div>`;
+}
+
+/* ════════════════════════════════════════════════════════════
+   PALPITE — validação rigorosa + bloqueio por tempo
+   ════════════════════════════════════════════════════════════ */
+function checaExistente(jid,nome){
+  const name=nome.trim();
+  const hint=document.getElementById('hint-'+jid);
+  const bt=document.getElementById('bt-'+jid);
+  if(!name||!hint||!bt)return;
+  const key=normKey(name);
+  const pals=palpitesDB[jid]||{};
+  if(pals[key]){
+    document.getElementById('sh-'+jid).value=pals[key].home;
+    document.getElementById('sa-'+jid).value=pals[key].away;
+    hint.textContent='✏️ Palpite encontrado — ajuste e confirme';
+    hint.className='edit-hint found';
+    bt.textContent='✓'; bt.style.background='#FF8F00';
+  }else{
+    hint.textContent='Digite seu nome · pode ajustar até o início do jogo';
+    hint.className='edit-hint';
+    bt.textContent='+'; bt.style.background='#1B5E20';
+  }
+}
+
+function addPalpite(jid){
+  const jogo=JOGOS.find(j=>j.id===jid);
+
+  // VALIDAÇÃO 1: jogo já iniciou? (dupla checagem em tempo real)
+  if(jogoIniciou(jogo)){
+    showToast('🔒 Palpites encerrados — o jogo já começou!','err');
+    renderJogos();
+    return;
+  }
+
+  const nmEl=document.getElementById('nm-'+jid);
+  const shEl=document.getElementById('sh-'+jid);
+  const saEl=document.getElementById('sa-'+jid);
+  if(!nmEl)return;
+  const name=nmEl.value.trim();
+
+  // VALIDAÇÃO 2: nome obrigatório
+  if(!name){ nmEl.style.borderColor='#e53935'; nmEl.focus(); setTimeout(()=>nmEl.style.borderColor='#e0e0e0',1500); return; }
+  if(name.length<2){ showToast('Nome muito curto','err'); return; }
+
+  // VALIDAÇÃO 3: placar válido
+  let home=parseInt(shEl.value), away=parseInt(saEl.value);
+  if(isNaN(home)||home<0||home>MAX_GOLS||isNaN(away)||away<0||away>MAX_GOLS){
+    showToast('Placar inválido (0 a '+MAX_GOLS+')','err'); return;
+  }
+
+  // VALIDAÇÃO 4: aposta definida
+  const apostaPP=parseFloat(apostasDB[jid])||0;
+  if(apostaPP<=0){ showToast('Aposta ainda não definida pelo admin','err'); return; }
+
+  const key=normKey(name);
+  const ref=db.ref('palpites/'+jid+'/'+key);
+
+  // Re-valida tempo no momento da escrita (proteção extra)
+  if(jogoIniciou(jogo)){ showToast('🔒 Tempo esgotado!','err'); renderJogos(); return; }
+
+  ref.once('value').then(s=>{
+    // VALIDAÇÃO 5: não permitir nome duplicado (cria novo) vs editar (mesmo nome)
+    if(s.exists()){
+      const tsOrig=s.val().ts;
+      ref.set({name,home,away,ts:tsOrig,tsEdit:agoraMs()})
+        .then(()=>{ nmEl.value=''; resetForm(jid); showToast('Palpite atualizado! ✏️'); })
+        .catch(()=>showToast('Erro ao salvar','err'));
+    }else{
+      ref.set({name,home,away,ts:agoraMs()})
+        .then(()=>{
+          nmEl.value=''; resetForm(jid);
+          db.ref('participantes/'+key).once('value').then(ps=>{ if(!ps.exists())db.ref('participantes/'+key).set({name,pago:false}); });
+          showToast('Palpite registrado! ⚽');
+        })
+        .catch(()=>showToast('Erro ao salvar','err'));
     }
   });
-}, 10000);
+}
 
-// ── ADMIN ──────────────────────────────────────────────────────
-function adminLogin() {
-  const pass = document.getElementById('admin-pass').value;
-  if(pass===(configDB.senha||'copa2026')) {
+function resetForm(jid){
+  const hint=document.getElementById('hint-'+jid);
+  const bt=document.getElementById('bt-'+jid);
+  if(hint){hint.textContent='Digite seu nome · pode ajustar até o início do jogo';hint.className='edit-hint';}
+  if(bt){bt.textContent='+';bt.style.background='#1B5E20';}
+}
+
+function delPal(jid,key){
+  if(!adminOK||!confirm('Remover palpite?'))return;
+  db.ref('palpites/'+jid+'/'+key).remove();
+  db.ref('auditLogs').push({acao:'delPal',jid,key,ts:agoraMs()});
+}
+
+/* ════════════════════════════════════════════════════════════
+   PRÊMIO + SORTEIO (imutável após definido)
+   ════════════════════════════════════════════════════════════ */
+function renderPremio(){
+  const c=document.getElementById('premio-ct');
+  let html='';
+  JOGOS.forEach(j=>{
+    const res=resultadosDB[j.id];
+    const pals=palpitesDB[j.id]||{};
+    const palsList=Object.entries(pals);
+    const nPals=palsList.length;
+    const apostaPP=parseFloat(apostasDB[j.id])||0;
+    const premio=apostaPP*nPals;
+    const temResultado=res&&res.home!=null;
+
+    let winners=[],naoWinners=[];
+    if(temResultado){
+      winners=palsList.filter(([,p])=>p.home===res.home&&p.away===res.away).map(([,p])=>p.name);
+      naoWinners=palsList.filter(([,p])=>!winners.includes(p.name)).map(([,p])=>p.name);
+    }
+
+    let body='';
+    const placarStr=temResultado?`${j.hName} ${res.home}×${res.away} ${j.aName}`:`${j.hName} × ${j.aName}`;
+
+    if(!temResultado){ body=`<div class="premio-tab-empty">⏳ Aguardando resultado</div>`; }
+    else if(winners.length===0){ body=`<div class="premio-tab-empty">😬 Ninguém acertou — sem pagamento</div>`; }
+    else if(naoWinners.length===0){ body=`<div class="premio-tab-empty">🎉 Todos acertaram! Sem pagamento</div>`; }
+    else{
+      if(sorteiosDB[j.id]) sorteioCache[j.id]=sorteiosDB[j.id];
+      else if(!sorteioCache[j.id]){ sorteioCache[j.id]=gerarSorteio(naoWinners,winners,premio); db.ref('sorteios/'+j.id).set(sorteioCache[j.id]); }
+      body=`<div class="lock-info">🔒 Sorteio definitivo — não muda mais</div>`;
+      body+=sorteioCache[j.id].map(it=>`<div class="pag-row"><div class="pag-de">💸 ${esc(it.pagador)}</div><div class="pag-seta">paga diretamente para</div><div class="pag-para">🏆 ${esc(it.vencedor)}</div><span class="pag-val">R$ ${it.valor.toFixed(2)}</span></div>`).join('');
+    }
+
+    html+=`<div class="premio-tab-card"><div class="premio-tab-top"><h2>${j.hFlag} ${placarStr} ${j.aFlag}</h2><p>${j.dataStr} · R$ ${apostaPP.toFixed(2)}/pessoa × ${nPals} = <strong>R$ ${premio.toFixed(2)}</strong></p></div><div class="premio-tab-body">${body}</div></div>`;
+  });
+  c.innerHTML=html||'<div style="text-align:center;color:#fff;padding:2rem;font-size:13px">Sem jogos</div>';
+}
+
+function gerarSorteio(pagadores,vencedores,total){
+  const pags=[...pagadores].sort(()=>Math.random()-.5);
+  const r=[];
+  if(vencedores.length===1){
+    const val=pags.length>0?total/pags.length:total;
+    pags.forEach(p=>r.push({pagador:p,vencedor:vencedores[0],valor:val}));
+  }else{
+    const pv=total/vencedores.length;
+    const g=Array.from({length:vencedores.length},()=>[]);
+    pags.forEach((p,i)=>g[i%vencedores.length].push(p));
+    g.forEach((grp,i)=>{ const val=grp.length>0?pv/grp.length:0; grp.forEach(p=>r.push({pagador:p,vencedor:vencedores[i],valor:val})); });
+  }
+  return r;
+}
+
+/* ════════════════════════════════════════════════════════════
+   ADMIN
+   ════════════════════════════════════════════════════════════ */
+function adminLogin(){
+  if(document.getElementById('admin-pass').value===(configDB.senha||SENHA_PADRAO)){
     adminOK=true;
     document.getElementById('admin-login').style.display='none';
     document.getElementById('admin-panel').style.display='block';
-    setTimeout(()=>{ renderAdminApostas(); renderAdminResults(); renderAdminParts(); }, 50);
-  } else showToast('Senha incorreta','err');
+    setTimeout(()=>{ renderAdminApostas(); renderAdminResults(); renderAdminParts(); },60);
+  }else showToast('Senha incorreta','err');
 }
-function adminLogout() {
+function adminLogout(){
   adminOK=false;
   document.getElementById('admin-login').style.display='block';
   document.getElementById('admin-panel').style.display='none';
@@ -666,128 +575,114 @@ function adminLogout() {
   renderJogos();
 }
 
-function renderAdminApostas() {
-  const el = document.getElementById('admin-apostas');
-  if(!el) return;
-  el.innerHTML = JOGOS.map(j=>{
-    const bloq  = apostaBloqueada(j);
-    const val   = apostasDB[j.id]!=null ? apostasDB[j.id] : '';
-    const nPals = Object.keys(palpitesDB[j.id]||{}).length;
-    const prev  = (parseFloat(val)||0)*nPals;
-    if(bloq) {
-      return `<div class="aposta-jogo-row">
-        <div class="aposta-jogo-label">${j.hFlag} ${j.hName} × ${j.aName} ${j.aFlag}</div>
-        <div class="aposta-jogo-sub">${j.dataStr}</div>
-        <div class="aposta-locked">🔒 Bloqueado · ${val!==''?`R$ ${parseFloat(val).toFixed(2)}/pessoa · Prêmio: R$ ${prev.toFixed(2)}`:'Valor não definido'}</div>
-      </div>`;
+function renderAdminApostas(){
+  const el=document.getElementById('admin-apostas');
+  if(!el)return;
+  el.innerHTML=JOGOS.map(j=>{
+    const bloq=jogoIniciou(j);
+    const val=apostasDB[j.id]!=null?apostasDB[j.id]:'';
+    const nPals=Object.keys(palpitesDB[j.id]||{}).length;
+    const prev=(parseFloat(val)||0)*nPals;
+    if(bloq){
+      return `<div class="aposta-jogo-row"><div class="aposta-jogo-label">${j.hFlag} ${j.hName} × ${j.aName} ${j.aFlag}</div><div class="aposta-jogo-sub">${j.dataStr}</div><div class="aposta-locked">🔒 Bloqueado · ${val!==''?`R$ ${parseFloat(val).toFixed(2)}/pessoa · Prêmio: R$ ${prev.toFixed(2)}`:'Não definido'}</div></div>`;
     }
-    return `<div class="aposta-jogo-row">
-      <div class="aposta-jogo-label">${j.hFlag} ${j.hName} × ${j.aName} ${j.aFlag}</div>
-      <div class="aposta-jogo-sub">${j.dataStr}</div>
-      <div class="aposta-jogo-input">
-        <span>R$</span>
-        <input type="number" class="inp-aposta" id="ap-${j.id}" value="${val}" min="0" step="1" placeholder="0" oninput="atualizaPreview('${j.id}')">
-      </div>
-      ${nPals>0?`<div class="aposta-premio-preview" id="prev-${j.id}">→ ${nPals} apostador${nPals!==1?'es':''} · Prêmio estimado: R$ ${prev.toFixed(2)}</div>`:`<div class="aposta-premio-preview" id="prev-${j.id}" style="color:#aaa">Nenhum apostador ainda</div>`}
-    </div>`;
+    return `<div class="aposta-jogo-row"><div class="aposta-jogo-label">${j.hFlag} ${j.hName} × ${j.aName} ${j.aFlag}</div><div class="aposta-jogo-sub">${j.dataStr}</div><div class="aposta-jogo-input"><span>R$</span><input type="number" class="inp-aposta" id="ap-${j.id}" value="${val}" min="0" step="1" placeholder="0" oninput="prevAposta('${j.id}')"></div><div class="aposta-premio-preview" id="pv-${j.id}">${nPals>0?`→ ${nPals} apostador${nPals!==1?'es':''} · Prêmio: R$ ${prev.toFixed(2)}`:'Nenhum apostador ainda'}</div></div>`;
   }).join('');
 }
-
-function atualizaPreview(jid) {
-  const el = document.getElementById('prev-'+jid);
-  if(!el) return;
-  const val = parseFloat(document.getElementById('ap-'+jid).value)||0;
-  const n = Object.keys(palpitesDB[jid]||{}).length;
-  if(n>0) el.innerHTML = `→ ${n} apostador${n!==1?'es':''} · Prêmio estimado: R$ ${(val*n).toFixed(2)}`;
+function prevAposta(jid){
+  const el=document.getElementById('pv-'+jid);
+  if(!el)return;
+  const val=parseFloat(document.getElementById('ap-'+jid).value)||0;
+  const n=Object.keys(palpitesDB[jid]||{}).length;
+  el.innerHTML=n>0?`→ ${n} apostador${n!==1?'es':''} · Prêmio: R$ ${(val*n).toFixed(2)}`:'Nenhum apostador ainda';
 }
-
-function saveApostas() {
-  const updates = {};
-  let temBloqueado = false;
+function saveApostas(){
+  const updates={}; let bloqueados=0;
   JOGOS.forEach(j=>{
-    if(apostaBloqueada(j)) { temBloqueado=true; return; }
-    const el = document.getElementById('ap-'+j.id);
-    if(el) updates[j.id] = parseFloat(el.value)||0;
+    if(jogoIniciou(j)){bloqueados++;return;}
+    const el=document.getElementById('ap-'+j.id);
+    if(el)updates[j.id]=parseFloat(el.value)||0;
   });
   db.ref('apostas').update(updates).then(()=>{
-    showToast('Valores salvos!');
-    renderJogos();
+    showToast('Valores salvos!'+(bloqueados>0?` (${bloqueados} já iniciado(s) preservado(s))`:''));
     renderAdminApostas();
-    if(temBloqueado) showToast('Atenção: jogos iniciados não foram alterados','err');
   });
 }
 
-function renderAdminResults() {
-  const el = document.getElementById('admin-results');
-  if(!el) return;
-  el.innerHTML = JOGOS.map(j=>{
+function renderAdminResults(){
+  const el=document.getElementById('admin-results');
+  if(!el)return;
+  el.innerHTML=JOGOS.map(j=>{
     const res=resultadosDB[j.id]||{};
-    return `<div class="res-row">
-      <div class="res-label">${j.hFlag} ${j.hName} × ${j.aName} ${j.aFlag}<br><span style="font-size:10px;color:#aaa">${j.dataStr}</span></div>
-      <input type="number" class="inp-mini" id="rh-${j.id}" value="${res.home??''}" min="0" max="20" placeholder="0">
-      <span style="font-size:14px;color:#ccc;font-weight:700">×</span>
-      <input type="number" class="inp-mini" id="ra-${j.id}" value="${res.away??''}" min="0" max="20" placeholder="0">
-      <button class="btn-ok" onclick="saveResult('${j.id}')">OK</button>
-    </div>`;
+    const locked=!!sorteiosDB[j.id];
+    return `<div class="res-row"><div class="res-label">${j.hFlag} ${j.hName} × ${j.aName} ${j.aFlag}<br><span style="font-size:10px;color:#aaa">${j.dataStr}${locked?' · 🔒 sorteio feito':''}</span></div><input type="number" class="inp-mini" id="rh-${j.id}" value="${res.home??''}" min="0" max="${MAX_GOLS}"><span style="font-size:14px;color:#ccc;font-weight:700">×</span><input type="number" class="inp-mini" id="ra-${j.id}" value="${res.away??''}" min="0" max="${MAX_GOLS}"><button class="btn-ok" onclick="saveResult('${j.id}')">OK</button></div>`;
   }).join('');
 }
-
-function saveResult(id) {
-  const h=parseInt(document.getElementById('rh-'+id).value)||0;
-  const a=parseInt(document.getElementById('ra-'+id).value)||0;
-  // Verifica se já tem sorteio salvo — se tiver, bloqueia alteração de resultado
-  if(sorteiosDB[id]) {
-    if(!confirm('⚠️ O sorteio de pagadores já foi definido para este jogo.\nAlterar o resultado irá resetar o sorteio.\n\nDeseja continuar?')) return;
-    // Reseta sorteio para regenerar com novo resultado
-    db.ref('sorteios/'+id).remove();
-    delete sorteioCache[id];
-    delete sorteiosDB[id];
+function saveResult(id){
+  const h=parseInt(document.getElementById('rh-'+id).value);
+  const a=parseInt(document.getElementById('ra-'+id).value);
+  if(isNaN(h)||isNaN(a)||h<0||a<0){ showToast('Placar inválido','err'); return; }
+  if(sorteiosDB[id]){
+    if(!confirm('⚠️ O sorteio já foi definido.\nAlterar o resultado vai resetar o sorteio.\nContinuar?'))return;
+    db.ref('sorteios/'+id).remove(); delete sorteioCache[id]; delete sorteiosDB[id];
   }
-  db.ref('resultados/'+id).set({home:h,away:a,aoVivo:false,encerrado:true}).then(()=>{
-    db.ref('auditLogs').push({acao:'saveResult',id,home:h,away:a,ts:Date.now()});
-    showToast('Resultado salvo! Acesse a aba Prêmio para gerar o sorteio.');
+  db.ref('resultados/'+id).set({home:h,away:a,encerrado:true}).then(()=>{
+    db.ref('auditLogs').push({acao:'saveResult',id,home:h,away:a,ts:agoraMs()});
+    showToast('Resultado salvo!');
   });
 }
 
-function renderAdminParts() {
+function renderAdminParts(){
   const el=document.getElementById('admin-parts');
-  if(!el) return;
+  if(!el)return;
   const lista=Object.entries(participDB);
-  if(!lista.length){ el.innerHTML='<div style="font-size:12px;color:#bbb;text-align:center;padding:.75rem">Nenhum participante ainda.</div>'; return; }
-  el.innerHTML=lista.map(([key,p])=>`
-    <div class="part-row">
-      <span class="part-name">${esc(p.name)}</span>
-      <label class="part-pago"><input type="checkbox" ${p.pago?'checked':''} onchange="togglePago('${key}',this.checked)"> Pago</label>
-      <button class="btn-red" onclick="delPart('${key}')">✕</button>
-    </div>`).join('');
+  if(!lista.length){ el.innerHTML='<div style="font-size:12px;color:#bbb;text-align:center;padding:.75rem">Nenhum participante</div>'; return; }
+  el.innerHTML=lista.map(([key,p])=>`<div class="part-row"><span class="part-name">${esc(p.name)}</span><label class="part-pago"><input type="checkbox" ${p.pago?'checked':''} onchange="togglePago('${key}',this.checked)"> Pago</label><button class="btn-red" onclick="delPart('${key}')">✕</button></div>`).join('');
 }
 function togglePago(key,val){ db.ref('participantes/'+key+'/pago').set(val); }
-function delPart(key){ if(confirm('Remover?')) db.ref('participantes/'+key).remove(); }
-function changePass() {
+function delPart(key){ if(confirm('Remover?'))db.ref('participantes/'+key).remove(); }
+function changePass(){
   const np=document.getElementById('new-pass').value.trim();
-  if(!np){showToast('Digite uma senha','err');return;}
+  if(np.length<4){showToast('Senha muito curta (mín. 4)','err');return;}
   db.ref('config/senha').set(np).then(()=>{showToast('Senha alterada!');document.getElementById('new-pass').value='';});
 }
 
-// ── TABS ───────────────────────────────────────────────────────
-function showTab(tab) {
+/* ════════════════════════════════════════════════════════════
+   TABS + UTILS
+   ════════════════════════════════════════════════════════════ */
+function showTab(tab){
   ['jogos','premio','admin'].forEach((t,i)=>{
     document.getElementById('tab-'+t).style.display=t===tab?'block':'none';
     document.querySelectorAll('.tab')[i].classList.toggle('active',t===tab);
   });
-  if(tab==='premio') renderPremio();
-  if(tab==='admin'&&adminOK){ renderAdminApostas(); renderAdminResults(); renderAdminParts(); }
+  if(tab==='premio')renderPremio();
+  if(tab==='admin'&&adminOK){renderAdminApostas();renderAdminResults();renderAdminParts();}
 }
 
-// ── UTILS ──────────────────────────────────────────────────────
-function showToast(msg,type=''){const t=document.getElementById('toast');t.textContent=msg;t.className='toast'+(type?' '+type:'');t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2800);}
-function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
+function normKey(name){ return name.toLowerCase().trim().replace(/\s+/g,'_').replace(/[^a-z0-9_]/g,''); }
+function showToast(msg,type=''){ const t=document.getElementById('toast'); t.textContent=msg; t.className='toast'+(type?' '+type:''); t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2800); }
+function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
 document.addEventListener('keydown',e=>{
-  if(e.key!=='Enter') return;
+  if(e.key!=='Enter')return;
   const t=e.target;
-  if(t.id&&t.id.startsWith('nm-')) addPalpite(t.id.replace('nm-',''));
-  if(t.id==='admin-pass') adminLogin();
+  if(t.id&&t.id.startsWith('nm-'))addPalpite(t.id.replace('nm-',''));
+  if(t.id==='admin-pass')adminLogin();
 });
+
+/* ════════════════════════════════════════════════════════════
+   RELÓGIO DE BLOQUEIO — re-renderiza a cada 15s
+   Garante que o jogo trave automaticamente no horário exato
+   ════════════════════════════════════════════════════════════ */
+setInterval(()=>{
+  const algumProximoDoInicio=JOGOS.some(j=>{
+    const diff=inicioMs(j)-agoraMs();
+    return diff>-60000 && diff<300000; // entre -1min e +5min do início
+  });
+  // sempre re-renderiza para manter bloqueio preciso
+  renderJogos();
+  if(adminOK)renderAdminApostas();
+},15000);
 </script>
 </body>
 </html>
