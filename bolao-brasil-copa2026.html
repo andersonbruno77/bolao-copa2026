@@ -239,9 +239,9 @@ const API_KEY  = 'fe2eda29c2428d0ff795ff29bbc516a8';
 const API_BASE = 'https://v3.football.api-sports.io';
 
 const JOGOS = [
-  { id:'brasil-marrocos', fase:'Fase de Grupos', data:'2026-06-13T22:00:00-03:00', dataStr:'Sáb 13/06 · 19h00 BRT', hFlag:'🇧🇷', hName:'Brasil', aFlag:'🇲🇦', aName:'Marrocos', local:'MetLife Stadium · NJ' },
-  { id:'brasil-haiti',    fase:'Fase de Grupos', data:'2026-06-20T01:00:00-03:00', dataStr:'Sex 19/06 · 22h00 BRT', hFlag:'🇧🇷', hName:'Brasil', aFlag:'🇭🇹', aName:'Haiti',   local:'Lincoln Financial · Filadélfia' },
-  { id:'escocia-brasil',  fase:'Fase de Grupos', data:'2026-06-24T22:00:00-03:00', dataStr:'Qua 24/06 · 19h00 BRT', hFlag:'🏴󠁧󠁢󠁳󠁣󠁴󠁿', hName:'Escócia', aFlag:'🇧🇷', aName:'Brasil', local:'Hard Rock Stadium · Miami' }
+  { id:'brasil-marrocos', fase:'Fase de Grupos', data:'2026-06-13T22:00:00Z', dataStr:'Sáb 13/06 · 19h00 BRT', hFlag:'🇧🇷', hName:'Brasil', aFlag:'🇲🇦', aName:'Marrocos', local:'MetLife Stadium · NJ' },
+  { id:'brasil-haiti',    fase:'Fase de Grupos', data:'2026-06-20T04:00:00Z', dataStr:'Sex 19/06 · 22h00 BRT', hFlag:'🇧🇷', hName:'Brasil', aFlag:'🇭🇹', aName:'Haiti',   local:'Lincoln Financial · Filadélfia' },
+  { id:'escocia-brasil',  fase:'Fase de Grupos', data:'2026-06-24T22:00:00Z', dataStr:'Qua 24/06 · 19h00 BRT', hFlag:'🏴󠁧󠁢󠁳󠁣󠁴󠁿', hName:'Escócia', aFlag:'🇧🇷', aName:'Brasil', local:'Hard Rock Stadium · Miami' }
 ];
 
 const RES_SEED = {
@@ -265,7 +265,12 @@ let sorteioCache= {};
 let sorteiosDB  = {}; // sorteios salvos no Firebase — imutáveis
 
 // ── HELPERS ────────────────────────────────────────────────────
-function jogoIniciou(j) { return new Date() >= new Date(j.data); }
+function jogoIniciou(j) {
+  // Compara usando timestamp em ms para evitar problemas de fuso
+  const agora = Date.now();
+  const inicio = new Date(j.data).getTime();
+  return agora >= inicio;
+}
 function apostaBloqueada(j) { return jogoIniciou(j); }
 
 // ── FIREBASE ───────────────────────────────────────────────────
@@ -641,7 +646,7 @@ setInterval(()=>{
       renderJogos();
     }
   });
-}, 30000);
+}, 10000);
 
 // ── ADMIN ──────────────────────────────────────────────────────
 function adminLogin() {
