@@ -630,6 +630,19 @@ fetchAPI();
 setInterval(()=>{ if(Object.values(resultadosDB).some(r=>r&&r.aoVivo)) fetchAPI(); },60000);
 setInterval(fetchAPI,5*60*1000);
 
+// Verifica a cada 30s se algum jogo iniciou — bloqueia form automaticamente
+setInterval(()=>{
+  const agora = new Date();
+  JOGOS.forEach(j=>{
+    const inicio = new Date(j.data);
+    // Se o jogo iniciou há menos de 5 minutos, re-renderiza para bloquear
+    const diff = agora - inicio;
+    if(diff >= 0 && diff <= 5*60*1000) {
+      renderJogos();
+    }
+  });
+}, 30000);
+
 // ── ADMIN ──────────────────────────────────────────────────────
 function adminLogin() {
   const pass = document.getElementById('admin-pass').value;
