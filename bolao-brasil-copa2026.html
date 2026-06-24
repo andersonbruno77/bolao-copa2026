@@ -3,6 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 <title>Bolão Brasil — Copa 2026</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
@@ -152,7 +155,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   <div class="hero-badge">COPA DO MUNDO 2026</div>
   <h1>Bolão <span>Brasil</span></h1>
   <p>Acerte o placar e ganhe o prêmio do jogo!</p>
-  <div class="clock"><span id="relogio">--:--</span> · horário de Brasília</div>
+  <div class="clock"><span id="relogio">--:--</span> · BRT · <span id="versao">v2.0</span></div>
 </div>
 
 <div class="tabs">
@@ -206,6 +209,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 <script>
 'use strict';
+const VERSAO = 'v2.0-' + new Date().toISOString().slice(0,10);
+console.log('Bolão Brasil ' + VERSAO + ' carregado');
 firebase.initializeApp({ databaseURL:'https://bolao-copa2026-16bf3-default-rtdb.firebaseio.com' });
 const db = firebase.database();
 
@@ -253,7 +258,12 @@ function relogioBRT() {
   const d = new Date();
   return d.toLocaleTimeString('pt-BR',{timeZone:'America/Sao_Paulo',hour:'2-digit',minute:'2-digit'});
 }
-function tickRelogio(){ const el=document.getElementById('relogio'); if(el) el.textContent=relogioBRT(); }
+function tickRelogio(){
+  const el=document.getElementById('relogio');
+  if(el) el.textContent=relogioBRT();
+  const v=document.getElementById('versao');
+  if(v) v.textContent='v2.0';
+}
 setInterval(tickRelogio,1000); tickRelogio();
 
 /* ════════════════════════════════════════════════════════════
