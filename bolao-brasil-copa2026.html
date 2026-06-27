@@ -175,7 +175,7 @@ select.inp-std{appearance:none;-webkit-appearance:none;background-image:url("dat
   <div class="hero-badge">COPA DO MUNDO 2026</div>
   <h1>Bolão <span>Brasil</span></h1>
   <p>Acerte o placar e ganhe o prêmio do jogo!</p>
-  <div class="clock"><span id="relogio">--:--</span> · BRT · <span id="versao">v4.0</span></div>
+  <div class="clock"><span id="relogio">--:--</span> · BRT · <span id="versao">v5.0</span></div>
 </div>
 
 <div class="tabs">
@@ -226,6 +226,11 @@ select.inp-std{appearance:none;-webkit-appearance:none;background-image:url("dat
       <input type="password" id="new-pass" class="inp-std" placeholder="Nova senha">
       <button class="btn-green" onclick="changePass()">Salvar</button>
     </div>
+    <div class="admin-card">
+      <h3>🔄 FORÇAR ATUALIZAÇÃO GERAL</h3>
+      <p style="font-size:11px;color:#aaa;margin-bottom:.75rem">Versão rodando: <strong id="versao-admin">v5.0</strong>. Após subir uma versão nova no GitHub, clique aqui para que TODOS os celulares recarreguem automaticamente com a versão nova (sem precisar de aba anônima).</p>
+      <button class="btn-blue" onclick="publicarVersao()">📢 Publicar atualização para todos</button>
+    </div>
     <button class="btn-gray" onclick="adminLogout()" style="margin-bottom:1rem">Sair do admin</button>
   </div>
 </div>
@@ -261,8 +266,9 @@ select.inp-std{appearance:none;-webkit-appearance:none;background-image:url("dat
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 <script>
 'use strict';
-const VERSAO = 'v4.0-' + new Date().toISOString().slice(0,10);
-console.log('Bolão Brasil ' + VERSAO + ' carregado');
+const VERSAO = 'v5.0';
+const VERSAO_DATA = VERSAO + '-' + new Date().toISOString().slice(0,10);
+console.log('Bolão Brasil ' + VERSAO_DATA + ' carregado');
 firebase.initializeApp({ databaseURL:'https://bolao-copa2026-16bf3-default-rtdb.firebaseio.com' });
 const db = firebase.database();
 
@@ -278,12 +284,13 @@ const JOGOS_SEED = [
   { id:'brasil-marrocos', ordem:1, fase:'Fase de Grupos', dataUTC:'2026-06-13T22:00:00Z', dataStr:'Sáb 13/06 · 19h00 BRT', hFlag:'🇧🇷', hName:'Brasil', aFlag:'🇲🇦', aName:'Marrocos', local:'MetLife Stadium · NJ' },
   { id:'brasil-haiti',    ordem:2, fase:'Fase de Grupos', dataUTC:'2026-06-20T01:00:00Z', dataStr:'Sex 19/06 · 22h00 BRT', hFlag:'🇧🇷', hName:'Brasil', aFlag:'🇭🇹', aName:'Haiti',   local:'Lincoln Financial · Filadélfia' },
   { id:'escocia-brasil',  ordem:3, fase:'Fase de Grupos', dataUTC:'2026-06-24T22:00:00Z', dataStr:'Qua 24/06 · 19h00 BRT', hFlag:'🏴󠁧󠁢󠁳󠁣󠁴󠁿', hName:'Escócia', aFlag:'🇧🇷', aName:'Brasil', local:'Hard Rock Stadium · Miami' },
+  { id:'brasil-japao',    ordem:4, fase:'16-avos de Final', dataUTC:'2026-06-29T17:00:00Z', dataStr:'Seg 29/06 · 14h00 BRT', hFlag:'🇧🇷', hName:'Brasil', aFlag:'🇯🇵', aName:'Japão', local:'NRG Stadium · Houston' },
 ];
 
 // Array dinâmico — preenchido pelo Firebase. Ordenado por 'ordem' e data.
 let JOGOS = [...JOGOS_SEED];
 
-const FASES = ['Fase de Grupos','Oitavas de Final','Quartas de Final','Semifinal','Disputa de 3º Lugar','Final'];
+const FASES = ['Fase de Grupos','16-avos de Final','Oitavas de Final','Quartas de Final','Semifinal','Disputa de 3º Lugar','Final'];
 
 const RES_SEED = {
   'brasil-marrocos': { home:1, away:1, encerrado:true },
@@ -318,7 +325,9 @@ function tickRelogio(){
   const el=document.getElementById('relogio');
   if(el) el.textContent=relogioBRT();
   const v=document.getElementById('versao');
-  if(v) v.textContent="v4.0";
+  if(v) v.textContent="v5.0";
+  const va=document.getElementById('versao-admin');
+  if(va) va.textContent=VERSAO;
 }
 setInterval(tickRelogio,1000); tickRelogio();
 
@@ -337,6 +346,10 @@ db.ref('jogos').on('value', s=>{
     db.ref('jogos').set(seed);
     return;
   }
+  // Adiciona jogos-semente novos que ainda não existem (ex: novas fases)
+  JOGOS_SEED.forEach(j=>{
+    if(!data[j.id]){ db.ref('jogos/'+j.id).set(j); }
+  });
   // Converte objeto → array ordenado
   JOGOS = Object.values(data).sort((a,b)=>{
     const fa=FASES.indexOf(a.fase), fb=FASES.indexOf(b.fase);
@@ -373,6 +386,61 @@ db.ref('apostas').on('value', s=>{
 db.ref('participantes').on('value', s=>{ participDB=s.val()||{}; if(adminOK)renderAdminParts(); });
 db.ref('config').on('value', s=>{ if(s.val())configDB={...configDB,...s.val()}; });
 db.ref('sorteios').on('value', s=>{ sorteiosDB=s.val()||{}; Object.entries(sorteiosDB).forEach(([id,p])=>sorteioCache[id]=p); if(document.getElementById('tab-premio').style.display!=='none')renderPremio(); });
+
+/* ════════════════════════════════════════════════════════════
+   CACHE-BUSTING AUTOMÁTICO
+   O app lê 'config/versaoAtual' no Firebase. Se a versão publicada
+   for diferente da que está rodando, recarrega forçando bypass do
+   cache (adicionando timestamp na URL). Assim ninguém fica preso
+   numa versão antiga sem precisar de aba anônima.
+   ════════════════════════════════════════════════════════════ */
+let versaoChecada=false;
+db.ref('config/versaoAtual').on('value', s=>{
+  const versaoServidor=s.val();
+  // Primeira vez: se Firebase não tem versão, grava a atual
+  if(!versaoServidor){
+    db.ref('config/versaoAtual').set(VERSAO);
+    versaoChecada=true;
+    return;
+  }
+  // Se a versão do servidor é diferente da minha E já passou a 1ª checagem
+  if(versaoChecada && versaoServidor!==VERSAO){
+    // Versão nova publicada — recarrega limpando cache
+    forcarReload();
+    return;
+  }
+  // Versão bate: limpa flag de reload para permitir futuras atualizações
+  if(versaoServidor===VERSAO){
+    sessionStorage.removeItem('jaRecarregou');
+  }
+  versaoChecada=true;
+});
+
+function forcarReload(){
+  // Proteção anti-loop: só recarrega 1x por sessão
+  if(sessionStorage.getItem('jaRecarregou')==='1'){
+    // Já tentou recarregar e ainda está desatualizado = cache do GitHub
+    // Mostra aviso em vez de entrar em loop
+    mostrarAvisoAtualizacao();
+    return;
+  }
+  sessionStorage.setItem('jaRecarregou','1');
+  // Tenta limpar caches do service worker / Cache API
+  if('caches' in window){
+    caches.keys().then(keys=>keys.forEach(k=>caches.delete(k)));
+  }
+  // Recarrega com timestamp para furar cache do navegador
+  const url=new URL(window.location.href);
+  url.searchParams.set('_v', Date.now());
+  window.location.replace(url.toString());
+}
+
+function mostrarAvisoAtualizacao(){
+  const aviso=document.createElement('div');
+  aviso.style.cssText='position:fixed;top:0;left:0;right:0;background:#FFD700;color:#1a1a1a;padding:12px;text-align:center;font-size:13px;font-weight:600;z-index:9999;box-shadow:0 2px 10px rgba(0,0,0,.3)';
+  aviso.innerHTML='🔄 Nova versão disponível! <a href="#" onclick="location.reload(true);return false" style="color:#1565C0;text-decoration:underline">Toque para atualizar</a>';
+  document.body.prepend(aviso);
+}
 
 /* ════════════════════════════════════════════════════════════
    RENDER JOGOS (agrupado por fase)
@@ -743,6 +811,14 @@ function changePass(){
   db.ref('config/senha').set(np).then(()=>{showToast('Senha alterada!');document.getElementById('new-pass').value='';});
 }
 
+function publicarVersao(){
+  if(!confirm('Isso fará TODOS os dispositivos recarregarem a página com a versão nova.\n\nUse apenas DEPOIS de subir o arquivo novo no GitHub.\n\nContinuar?'))return;
+  // Grava a versão atual do código no Firebase, disparando reload nos demais
+  db.ref('config/versaoAtual').set(VERSAO).then(()=>{
+    showToast('✅ Atualização publicada! Todos vão recarregar.');
+  }).catch(()=>showToast('Erro ao publicar','err'));
+}
+
 /* ════════════════════════════════════════════════════════════
    GERENCIAR JOGOS (admin) — sem editar código
    ════════════════════════════════════════════════════════════ */
@@ -885,7 +961,7 @@ function bandeira(nome){
 function faseFromRound(round){
   const r=(round||'').toLowerCase();
   if(r.includes('group')) return 'Fase de Grupos';
-  if(r.includes('round of 32')||r.includes('1/16')) return 'Oitavas de Final'; // 32avos
+  if(r.includes('round of 32')||r.includes('1/16')) return '16-avos de Final';
   if(r.includes('round of 16')||r.includes('8th')||r.includes('1/8')) return 'Oitavas de Final';
   if(r.includes('quarter')||r.includes('1/4')) return 'Quartas de Final';
   if(r.includes('semi')||r.includes('1/2')) return 'Semifinal';
@@ -906,7 +982,12 @@ async function importarJogosAPI(){
     const data=await r.json();
 
     if(data.errors && Object.keys(data.errors).length){
-      showToast('Erro API: '+JSON.stringify(data.errors).slice(0,40),'err');
+      const errStr=JSON.stringify(data.errors);
+      if(errStr.includes('Free plans')||errStr.includes('plan')){
+        showToast('⚠️ Plano gratuito da API não cobre a Copa 2026. Use "Adicionar manualmente".','err');
+      }else{
+        showToast('Erro API: '+errStr.slice(0,40),'err');
+      }
       btn.disabled=false; btn.textContent='🔄 Buscar próximos jogos do Brasil (API)';
       return;
     }
