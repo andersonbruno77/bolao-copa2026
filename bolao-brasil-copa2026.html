@@ -116,6 +116,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .inp-std:focus{border-color:#1B5E20}
 .btn-green{width:100%;padding:10px;background:#1B5E20;color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;margin-bottom:.4rem}
 .btn-green:hover{background:#2E7D32}
+.btn-blue{width:100%;padding:10px;background:#1565C0;color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;margin-bottom:.4rem}
+.btn-blue:hover{background:#1976D2}
+.btn-blue:disabled{background:#90A4AE;cursor:not-allowed}
 .btn-gray{width:100%;padding:10px;background:#f5f5f5;color:#555;border:1.5px solid #e0e0e0;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer}
 .btn-red{padding:5px 10px;background:#ef5350;color:#fff;border:none;border-radius:6px;font-size:11px;cursor:pointer}
 .btn-ok{padding:5px 10px;background:#1B5E20;color:#fff;border:none;border-radius:6px;font-size:11px;cursor:pointer}
@@ -172,7 +175,7 @@ select.inp-std{appearance:none;-webkit-appearance:none;background-image:url("dat
   <div class="hero-badge">COPA DO MUNDO 2026</div>
   <h1>Bolão <span>Brasil</span></h1>
   <p>Acerte o placar e ganhe o prêmio do jogo!</p>
-  <div class="clock"><span id="relogio">--:--</span> · BRT · <span id="versao">v3.0</span></div>
+  <div class="clock"><span id="relogio">--:--</span> · BRT · <span id="versao">v4.0</span></div>
 </div>
 
 <div class="tabs">
@@ -201,7 +204,8 @@ select.inp-std{appearance:none;-webkit-appearance:none;background-image:url("dat
       <h3>➕ GERENCIAR JOGOS</h3>
       <p style="font-size:11px;color:#aaa;margin-bottom:.75rem">Adicione jogos das próximas fases. Aparecem automaticamente para todos.</p>
       <div id="admin-jogos">Carregando...</div>
-      <button class="btn-green" onclick="abrirNovoJogo()" style="margin-top:.75rem">➕ Adicionar novo jogo</button>
+      <button class="btn-blue" onclick="importarJogosAPI()" style="margin-top:.75rem">🔄 Buscar próximos jogos do Brasil (API)</button>
+      <button class="btn-green" onclick="abrirNovoJogo()" style="margin-top:.4rem">➕ Adicionar manualmente</button>
     </div>
     <div class="admin-card">
       <h3>💰 VALOR DA APOSTA POR JOGO</h3>
@@ -257,7 +261,7 @@ select.inp-std{appearance:none;-webkit-appearance:none;background-image:url("dat
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 <script>
 'use strict';
-const VERSAO = 'v3.0-' + new Date().toISOString().slice(0,10);
+const VERSAO = 'v4.0-' + new Date().toISOString().slice(0,10);
 console.log('Bolão Brasil ' + VERSAO + ' carregado');
 firebase.initializeApp({ databaseURL:'https://bolao-copa2026-16bf3-default-rtdb.firebaseio.com' });
 const db = firebase.database();
@@ -314,7 +318,7 @@ function tickRelogio(){
   const el=document.getElementById('relogio');
   if(el) el.textContent=relogioBRT();
   const v=document.getElementById('versao');
-  if(v) v.textContent="v3.0";
+  if(v) v.textContent="v4.0";
 }
 setInterval(tickRelogio,1000); tickRelogio();
 
@@ -830,13 +834,13 @@ function salvarJogo(){
 }
 
 function formataDataStr(d){
-  const dias=['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
-  const dia=dias[d.getDay()];
-  const dd=String(d.getDate()).padStart(2,'0');
-  const mm=String(d.getMonth()+1).padStart(2,'0');
-  const hh=String(d.getHours()).padStart(2,'0');
-  const min=String(d.getMinutes()).padStart(2,'0');
-  return `${dia} ${dd}/${mm} · ${hh}h${min} BRT`;
+  // Sempre formata em horário de Brasília, independente do fuso do navegador
+  const fmt=new Intl.DateTimeFormat('pt-BR',{timeZone:'America/Sao_Paulo',weekday:'short',day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit',hour12:false});
+  const parts=fmt.formatToParts(d);
+  const get=t=>parts.find(p=>p.type===t)?.value||'';
+  let dia=get('weekday').replace('.','');
+  dia=dia.charAt(0).toUpperCase()+dia.slice(1);
+  return `${dia} ${get('day')}/${get('month')} · ${get('hour')}h${get('minute')} BRT`;
 }
 
 function removerJogo(id){
@@ -849,6 +853,131 @@ function removerJogo(id){
     db.ref('sorteios/'+id).remove()
   ]).then(()=>showToast('Jogo removido'));
 }
+
+/* ════════════════════════════════════════════════════════════
+   IMPORTAR JOGOS DO BRASIL VIA API-FOOTBALL
+   Endpoint: fixtures?league=1&season=2026 (todos os 104 jogos)
+   Filtra os do Brasil pelo NOME (mais robusto que ID).
+   A API adiciona jogos das eliminatórias automaticamente quando
+   os classificados são definidos.
+   ════════════════════════════════════════════════════════════ */
+const API_KEY  = 'fe2eda29c2428d0ff795ff29bbc516a8';
+const API_BASE = 'https://v3.football.api-sports.io';
+
+const BANDEIRAS = {
+  'brazil':'🇧🇷','brasil':'🇧🇷','morocco':'🇲🇦','haiti':'🇭🇹','scotland':'🏴󠁧󠁢󠁳󠁣󠁴󠁿',
+  'argentina':'🇦🇷','france':'🇫🇷','spain':'🇪🇸','portugal':'🇵🇹','england':'🏴󠁧󠁢󠁥󠁮󠁧󠁿',
+  'germany':'🇩🇪','netherlands':'🇳🇱','belgium':'🇧🇪','croatia':'🇭🇷','uruguay':'🇺🇾',
+  'colombia':'🇨🇴','mexico':'🇲🇽','usa':'🇺🇸','united states':'🇺🇸','japan':'🇯🇵',
+  'south korea':'🇰🇷','korea republic':'🇰🇷','senegal':'🇸🇳','switzerland':'🇨🇭','italy':'🇮🇹',
+  'denmark':'🇩🇰','poland':'🇵🇱','serbia':'🇷🇸','ecuador':'🇪🇨','ghana':'🇬🇭',
+  'cameroon':'🇨🇲','nigeria':'🇳🇬','australia':'🇦🇺','canada':'🇨🇦','qatar':'🇶🇦',
+  'iran':'🇮🇷','saudi arabia':'🇸🇦','tunisia':'🇹🇳','peru':'🇵🇪','chile':'🇨🇱',
+  'paraguay':'🇵🇾','wales':'🏴󠁧󠁢󠁷󠁬󠁳󠁿','colômbia':'🇨🇴'
+};
+
+function bandeira(nome){
+  const n=(nome||'').toLowerCase().trim();
+  return BANDEIRAS[n]||'🏳️';
+}
+
+// Mapeia "round" da API para nome de fase em português
+function faseFromRound(round){
+  const r=(round||'').toLowerCase();
+  if(r.includes('group')) return 'Fase de Grupos';
+  if(r.includes('round of 32')||r.includes('1/16')) return 'Oitavas de Final'; // 32avos
+  if(r.includes('round of 16')||r.includes('8th')||r.includes('1/8')) return 'Oitavas de Final';
+  if(r.includes('quarter')||r.includes('1/4')) return 'Quartas de Final';
+  if(r.includes('semi')||r.includes('1/2')) return 'Semifinal';
+  if(r.includes('3rd place')||r.includes('third')) return 'Disputa de 3º Lugar';
+  if(r.includes('final')) return 'Final';
+  return 'Fase de Grupos';
+}
+
+async function importarJogosAPI(){
+  const btn=event.target;
+  btn.disabled=true; btn.textContent='🔄 Buscando...';
+  showToast('Consultando API-Football...');
+
+  try{
+    const r=await fetch(`${API_BASE}/fixtures?league=1&season=2026`,{
+      headers:{'x-apisports-key':API_KEY}
+    });
+    const data=await r.json();
+
+    if(data.errors && Object.keys(data.errors).length){
+      showToast('Erro API: '+JSON.stringify(data.errors).slice(0,40),'err');
+      btn.disabled=false; btn.textContent='🔄 Buscar próximos jogos do Brasil (API)';
+      return;
+    }
+
+    if(!data.response || !data.response.length){
+      showToast('API sem dados da Copa 2026 ainda. Adicione manual.','err');
+      btn.disabled=false; btn.textContent='🔄 Buscar próximos jogos do Brasil (API)';
+      return;
+    }
+
+    // Filtra jogos do Brasil
+    const jogosBrasil=data.response.filter(fix=>{
+      const h=(fix.teams.home.name||'').toLowerCase();
+      const a=(fix.teams.away.name||'').toLowerCase();
+      return h.includes('brazil')||h.includes('brasil')||a.includes('brazil')||a.includes('brasil');
+    });
+
+    if(!jogosBrasil.length){
+      showToast('Nenhum jogo do Brasil encontrado na API','err');
+      btn.disabled=false; btn.textContent='🔄 Buscar próximos jogos do Brasil (API)';
+      return;
+    }
+
+    // Importa cada jogo (não sobrescreve se já existe com palpites)
+    let novos=0, atualizados=0;
+    for(const fix of jogosBrasil){
+      const hName=fix.teams.home.name;
+      const aName=fix.teams.away.name;
+      const dataUTC=fix.fixture.date; // ISO UTC
+      const dBRT=new Date(new Date(dataUTC).getTime()-3*3600000);
+      const fase=faseFromRound(fix.league.round);
+      const local=fix.fixture.venue.name?`${fix.fixture.venue.name} · ${fix.fixture.venue.city||''}`:'A definir';
+      const id='api-'+fix.fixture.id;
+
+      const jogo={
+        id, ordem:fix.fixture.timestamp, fase, dataUTC,
+        dataStr:formataDataStr(new Date(dataUTC)),
+        hFlag:bandeira(hName), hName, aFlag:bandeira(aName), aName, local,
+        apiFixtureId:fix.fixture.id
+      };
+
+      // Não duplica: verifica se já existe jogo com mesmos times
+      const existente=JOGOS.find(j=>
+        (j.hName===hName&&j.aName===aName) || j.id===id
+      );
+      if(existente){
+        // Só atualiza resultado se a API tiver placar final
+        const st=fix.fixture.status.short;
+        if(['FT','AET','PEN'].includes(st) && fix.goals.home!=null){
+          db.ref('resultados/'+existente.id).set({home:fix.goals.home,away:fix.goals.away,encerrado:true});
+          atualizados++;
+        }
+      }else{
+        await db.ref('jogos/'+id).set(jogo);
+        novos++;
+        // Se já encerrado, importa o placar
+        const st=fix.fixture.status.short;
+        if(['FT','AET','PEN'].includes(st) && fix.goals.home!=null){
+          db.ref('resultados/'+id).set({home:fix.goals.home,away:fix.goals.away,encerrado:true});
+        }
+      }
+    }
+
+    showToast(`✅ ${novos} novo(s), ${atualizados} resultado(s) atualizado(s)`);
+  }catch(e){
+    showToast('Erro de conexão com a API','err');
+  }finally{
+    btn.disabled=false; btn.textContent='🔄 Buscar próximos jogos do Brasil (API)';
+  }
+}
+
 
 /* ════════════════════════════════════════════════════════════
    TABS + UTILS
